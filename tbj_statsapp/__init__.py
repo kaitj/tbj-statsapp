@@ -1,8 +1,14 @@
+"""Instantiate Flask and set up plugins"""
+
 import os
 
 from flask import Flask
 
-from tbj_statsapp import DevelopmentConfig, ProductionConfig, TestingConfig
+from tbj_statsapp.config import (
+    DevelopmentConfig,
+    ProductionConfig,
+    TestingConfig,
+)
 
 
 class ConfigException(Exception):
@@ -18,18 +24,17 @@ class ConfigException(Exception):
 
 
 # Grab environment
-environment = os.environ.get("FLASK_ENV", None)
+DEBUG = os.environ.get("FLASK_DEBUG", False)
+TESTING = os.environ.get("FLASK_TESTING", False)
 
-if not environment:
-    raise ConfigException("Environment is not defined")
-elif environment.lower() == "development":
+if DEBUG:
     config_settings = DevelopmentConfig()
-elif environment.lower() == "testing":
+elif TESTING:
     config_settings = TestingConfig()
-elif environment.lower() == "production":
+elif not DEBUG and not TESTING:
     config_settings = ProductionConfig()
 else:
-    raise ConfigException("Defined environment is invalid")
+    raise ConfigException("Improper environment configured")
 
 
 def create_app():

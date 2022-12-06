@@ -1,3 +1,4 @@
+"""Configuration classes for Flask"""
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -22,12 +23,12 @@ class ProductionConfig(Config):
 class DevelopmentConfig(Config):
     """Config used in development of app"""
 
-    DEVELOPMENT = True
     DEBUG = True
+    TESTING = False
 
 
 class TestingConfig(Config):
     """Config used for unit testing"""
 
-    DEBUG = True
+    DEBUG = False
     TESTING = True

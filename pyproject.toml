@@ -1,0 +1,41 @@
+[tool.poetry]
+name = "tbj-statsapp"
+version = "0.1.0-pre.1"
+description = "Toronto Blue Jays developer exercise - team and player stats app"
+authors = ["Jason Kai <tkai@uwo.ca>"]
+readme = "README.md"
+packages = [{include = "bluejays_statsapp"}]
+
+[tool.poetry.dependencies]
+python = ">=3.8.1, <3.11"
+Flask = "^2.2.2"
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.10.0"
+isort = "^5.10.1"
+flake8 = "^6.0.0"
+poethepoet = "^0.16.5"
+pre-commit = "^2.20.0"
+yamlfix = "^1.1.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poe.tasks]
+setup = "pre-commit install"
+yamlfix = { shell = "find . -type f \\( -iname \\*.yaml -o -iname \\*.yml \\) -exec yamlfix {} \\;" }
+isort = "isort tbj-statsapp/*.py"
+black = "black tbj-statsapp"
+flake8 = "flake8 tbj-statsapp"
+quality = ["yamlfix", "isort", "black", "flake8"]
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.black]
+line-length = 79
+
+[tool.flake8]
+ignore = 'E501'

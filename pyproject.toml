@@ -1,14 +1,15 @@
 [tool.poetry]
-name = "tbj-statsapp"
+name = "tbj_statsapp"
 version = "0.1.0-pre.1"
 description = "Toronto Blue Jays developer exercise - team and player stats app"
 authors = ["Jason Kai <tkai@uwo.ca>"]
 readme = "README.md"
-packages = [{include = "bluejays_statsapp"}]
+packages = [{include = "tbj_statsapp"}]
 
 [tool.poetry.dependencies]
 python = ">=3.8.1, <3.11"
 Flask = "^2.2.2"
+python-dotenv = "^0.21.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.10.0"
@@ -25,9 +26,9 @@ build-backend = "poetry.core.masonry.api"
 [tool.poe.tasks]
 setup = "pre-commit install"
 yamlfix = { shell = "find . -type f \\( -iname \\*.yaml -o -iname \\*.yml \\) -exec yamlfix {} \\;" }
-isort = "isort tbj-statsapp/*.py"
-black = "black tbj-statsapp"
-flake8 = "flake8 tbj-statsapp"
+isort = "isort tbj_statsapp/*.py"
+black = "black tbj_statsapp"
+flake8 = "flake8 tbj_statsapp"
 quality = ["yamlfix", "isort", "black", "flake8"]
 
 [tool.isort]

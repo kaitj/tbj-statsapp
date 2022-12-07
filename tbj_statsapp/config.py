@@ -24,11 +24,9 @@ class DevelopmentConfig(Config):
     """Config used in development of app"""
 
     DEBUG = True
-    TESTING = False
 
 
 class TestingConfig(Config):
     """Config used for unit testing"""
 
-    DEBUG = False
     TESTING = True

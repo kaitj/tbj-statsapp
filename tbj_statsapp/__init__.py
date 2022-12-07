@@ -42,8 +42,12 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(config_settings)
 
+    # Route views without Flask blueprints
+    with app.app_context():
+        from tbj_statsapp import views
+
     return app
 
 
 if __name__ == "__main__":
-    create_app().run()
+    create_app().run(debug=True)

@@ -1,0 +1,100 @@
+/* Google fonts */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap');
+
+/* Global settings */
+:root {
+    /* Colours */
+    --primary: #244D87;
+    --secondary: #3E9FCA;
+    --danger: #842C2E;
+    --row: #FFF;
+    --offset: #F7F7F7;
+
+    /* Fonts */
+    --normal: 400;
+    --bold: 600;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  background-color: var(--primary);
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+h3 {
+  color: var(--row);
+  font-weight: var(--bold);
+}
+
+/* Nav */
+#navbar {
+    background-color: #204377;
+}
+
+.nav-link {
+    color: var(--row);
+    font-weight: var(--normal);
+    padding: 0 1.5rem !important;
+}
+
+a.nav-link:hover {
+    color: var(--offset);
+    font-weight: var(--normal);
+    text-decoration-line: overline;
+    text-decoration-thickness: 0.1rem;
+}
+
+a.nav-link.active {
+    color: var(--row);
+    font-weight: var(--bold);
+    text-decoration-line: overline;
+    text-decoration-thickness: 0.2rem;
+}
+
+/* Body */
+#body {
+    padding-top: 1.5rem;
+}
+
+/* header .nav-link {
+  font-size: 32px;
+  color: #fff;
+}
+
+.nav .nav-link {
+  color: #fff;
+}
+
+header .nav-link:hover,
+.nav .nav-link:hover {
+  color: #00ff01;
+}
+
+header hr {
+  color: #00ff01;
+  border-top: 0.2vw solid;
+  margin-top: -1%;
+}
+
+/* Footer */
+/* footer {
+  background-color: #00ff01;
+  color: #000;
+}
+
+footer .nav-link {
+  color: #000;
+  font-size: 18px;
+}
+
+footer .nav-link:hover {
+  color: #fff;
+} */

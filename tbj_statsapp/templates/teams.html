@@ -1,14 +1,6 @@
 {% extends "base.html" %}
-{% block title %} | ABOUT{% endblock %}
+{% block title %} | TEAMS{% endblock %}
 
 {% block content %}
-    <article class="container">
-      <div class="row">
-        <div class="col-7">
-          <p>Hello teams!!!
-          </p>
-        </div>
-
-      </div>
-    </article>
+  {% include "index/divisions.html" %}
 {% endblock %}

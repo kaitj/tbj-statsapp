@@ -32,6 +32,8 @@ body {
 h3 {
   color: var(--row);
   font-weight: var(--bold);
+  font-size: 20px;
+  padding-left: 0 !important;
 }
 
 /* Nav */
@@ -42,59 +44,73 @@ h3 {
 .nav-link {
     color: var(--row);
     font-weight: var(--normal);
-    padding: 0 1.5rem !important;
+    padding-left: 20px !important;
+    padding-right: 0 !important;
 }
 
 a.nav-link:hover {
     color: var(--offset);
     font-weight: var(--normal);
     text-decoration-line: overline;
-    text-decoration-thickness: 0.1rem;
+    text-decoration-thickness: 1px;
 }
 
 a.nav-link.active {
     color: var(--row);
     font-weight: var(--bold);
     text-decoration-line: overline;
-    text-decoration-thickness: 0.2rem;
+    text-decoration-thickness: 3px;
 }
 
 /* Body */
 #body {
-    padding-top: 1.5rem;
+    padding-top: 16px;
 }
 
-/* header .nav-link {
-  font-size: 32px;
-  color: #fff;
+/* Table */
+.division {
+  padding: 8px 0;
 }
 
-.nav .nav-link {
-  color: #fff;
+thead tr {
+  background-color: var(--secondary);
+  color: var(--row);
+  font-weight: var(--bold);
 }
 
-header .nav-link:hover,
-.nav .nav-link:hover {
-  color: #00ff01;
+thead tr th:first-child {
+  border-top-left-radius: 10px;
 }
 
-header hr {
-  color: #00ff01;
-  border-top: 0.2vw solid;
-  margin-top: -1%;
+thead tr th:last-child {
+  border-top-right-radius: 10px;
 }
 
-/* Footer */
-/* footer {
-  background-color: #00ff01;
-  color: #000;
+thead tr th {
+  padding: 4px 0;
 }
 
-footer .nav-link {
-  color: #000;
-  font-size: 18px;
+tbody tr:nth-child(even) {
+  background-color: var(--offset);
 }
 
-footer .nav-link:hover {
-  color: #fff;
-} */
+tbody tr:nth-child(odd) {
+  background-color: var(--row);
+}
+
+tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 10px;
+}
+
+tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 10px;
+}
+
+tbody tr td {
+  padding: 4px 0;
+}
+
+a.teamName {
+  color: var(--primary);
+  font-weight: var(--bold);
+}

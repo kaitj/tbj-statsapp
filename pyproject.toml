@@ -19,6 +19,8 @@ flake8 = "^6.0.0"
 poethepoet = "^0.16.5"
 pre-commit = "^2.20.0"
 yamlfix = "^1.1.1"
+jupyter = "^1.0.0"
+jupyterlab = "^3.5.1"
 
 [build-system]
 requires = ["poetry-core"]

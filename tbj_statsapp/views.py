@@ -43,8 +43,11 @@ def teams():
             )
     # TODO: Raise error / alternative computation
 
+    table_headers = ["W", "L", "Pct", "GB", "L10", "DIFF"]
+
     return render_template(
         "teams.html",
+        table_headers=table_headers,
         al_divisions=al_divisions,
         nl_divisions=nl_divisions,
     )

@@ -118,8 +118,3 @@ tbody tr td {
   padding: 4px 0;
   font-size: var(--text);
 }
-
-a.teamName {
-  color: var(--primary);
-  font-weight: var(--bold);
-}

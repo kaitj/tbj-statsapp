@@ -23,10 +23,10 @@ def get_recent_news(rss, request_session, team=None):
 
     # Grab most recent 4 news stories
     for entry in entries[:4]:
-        news["title"] += [entry["title"]]
-        news["link"] += [entry["link"]]
-        news["author"] += [entry["dc:creator"]]
-        news["image"] += [entry["image"]["@href"]]
+        news["title"].extend([entry["title"]])
+        news["link"].extend([entry["link"]])
+        news["author"].extend([entry["dc:creator"]])
+        news["image"].extend([entry["image"]["@href"]])
 
         # Convert date to desired format
         date = datetime.strptime(

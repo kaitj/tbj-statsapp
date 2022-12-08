@@ -4,7 +4,6 @@
     <h3>Teams</h3>
   </div>
 
-  <!-- TODO FIX URLS -->
   <div class="row">
     <!-- AL -->
     <div class="col-6">
@@ -16,7 +15,7 @@
             <tr>
               <th style="padding-left: 12px">{{ division.division }}</th>
               {% for tbl_header in table_headers %}
-                <th style="text-align: center">{{ tbl_header }}</th>
+              <th style="text-align: center">{{ tbl_header }}</th>
               {% endfor %}
             </tr>
           </thead>
@@ -29,33 +28,36 @@
                   <div class="col-3" style="text-align: center">
                     <img
                       style="max-height: 20px"
-                      src="{{ division.team_logos[loop.index0] }}"
+                      src="{{ division.logos[loop.index0] }}"
                     />
                   </div>
                   <div class="col-9" style="margin-left: -24px">
-                    <a class="teamName" href="#"
-                      >{{ division.team_abbreviations[loop.index0] }}</a
+                    <a
+                      class="teamName"
+                      href="/teams/{{ division.abbreviations[loop.index0] }}"
+                      style="color: var(--primary); font-weight: var(--bold)"
+                      >{{ division.abbreviations[loop.index0] }}</a
                     >
                   </div>
                 </div>
               </td>
               <td style="width: 10%; text-align: center">
-                {{ division.team_wins[loop.index0] }}
+                {{ division.wins[loop.index0] }}
               </td>
               <td style="width: 10%; text-align: center">
-                {{ division.team_losses[loop.index0] }}
+                {{ division.losses[loop.index0] }}
               </td>
               <td style="width: 10%; text-align: center">
-                {{ division.team_pct[loop.index0] }}
+                {{ division.pct[loop.index0] }}
               </td>
               <td style="width: 10%; text-align: center">
-                {{ division.team_gb[loop.index0] }}
+                {{ division.gb[loop.index0] }}
               </td>
               <td style="width: 10%; text-align: center">
-                {{ division.team_l10[loop.index0] }}
+                {{ division.l10[loop.index0] }}
               </td>
               <td style="width: 10%; text-align: center">
-                {{ division.team_diff[loop.index0] }}
+                {{ division.diff[loop.index0] }}
               </td>
             </tr>
             {% endfor %}
@@ -75,7 +77,7 @@
             <tr>
               <th style="padding-left: 12px">{{ division.division }}</th>
               {% for tbl_header in table_headers %}
-                <th style="text-align: center">{{ tbl_header }}</th>
+              <th style="text-align: center">{{ tbl_header }}</th>
               {% endfor %}
             </tr>
           </thead>
@@ -88,33 +90,36 @@
                   <div class="col-3" style="text-align: center">
                     <img
                       style="max-height: 20px"
-                      src="{{ division.team_logos[loop.index0] }}"
+                      src="{{ division.logos[loop.index0] }}"
                     />
                   </div>
                   <div class="col-9" style="margin-left: -24px">
-                    <a class="teamName" href="#"
-                      >{{ division.team_abbreviations[loop.index0] }}</a
+                    <a
+                      class="teamName"
+                      href="/teams/{{ division.abbreviations[loop.index0] }}"
+                      style="color: var(--primary); font-weight: var(--bold)"
+                      >{{ division.abbreviations[loop.index0] }}</a
                     >
                   </div>
                 </div>
               </td>
               <td style="width: 10%; text-align: center">
-                {{ division.team_wins[loop.index0] }}
+                {{ division.wins[loop.index0] }}
               </td>
               <td style="width: 10%; text-align: center">
-                {{ division.team_losses[loop.index0] }}
+                {{ division.losses[loop.index0] }}
               </td>
               <td style="width: 10%; text-align: center">
-                {{ division.team_pct[loop.index0] }}
+                {{ division.pct[loop.index0] }}
               </td>
               <td style="width: 10%; text-align: center">
-                {{ division.team_gb[loop.index0] }}
+                {{ division.gb[loop.index0] }}
               </td>
               <td style="width: 10%; text-align: center">
-                {{ division.team_l10[loop.index0] }}
+                {{ division.l10[loop.index0] }}
               </td>
               <td style="width: 10%; text-align: center">
-                {{ division.team_diff[loop.index0] }}
+                {{ division.diff[loop.index0] }}
               </td>
             </tr>
             {% endfor %}

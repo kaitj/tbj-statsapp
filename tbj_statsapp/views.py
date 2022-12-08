@@ -4,7 +4,7 @@ import requests
 from flask import current_app as app
 from flask import redirect, render_template
 
-from tbj_statsapp import standings
+from tbj_statsapp import news, standings
 
 # Insert team name before feeds for team feeds
 # e.g. https://www.mlb.com/bluejays/feeds/news/rss.xml
@@ -29,6 +29,7 @@ def teams():
 
     # Sanity check to make sure both leagues have same number of divisions
     al_divisions, nl_divisions = [], []
+    table_headers = ["W", "L", "Pct", "GB", "L10", "DIFF"]
     if len(al_standings) == len(nl_standings):
         for idx in range(len(al_standings)):
             al_divisions.append(
@@ -41,15 +42,17 @@ def teams():
                     STATSAPI_URL, nl_standings, idx, request_session
                 )
             )
-    # TODO: Raise error / alternative computation
+        # TODO: Raise error / alternative computation
 
-    table_headers = ["W", "L", "Pct", "GB", "L10", "DIFF"]
+        # Get league news
+        league_news = news.get_recent_news(NEWS_RSS, request_session)
 
     return render_template(
         "teams.html",
         table_headers=table_headers,
         al_divisions=al_divisions,
         nl_divisions=nl_divisions,
+        league_news=league_news,
     )
 
 

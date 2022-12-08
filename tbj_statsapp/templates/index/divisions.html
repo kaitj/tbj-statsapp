@@ -4,6 +4,7 @@
     <h3>Teams</h3>
   </div>
 
+  <!-- NOTE: Look to refactor AL/NL to take advantage of jinja -->
   <div class="row">
     <!-- AL -->
     <div class="col-6">
@@ -13,7 +14,7 @@
           <!-- Table header -->
           <thead>
             <tr>
-              <th style="padding-left: 12px">{{ division.division }}</th>
+              <th style="padding-left: 12px">{{ division.name }}</th>
               {% for tbl_header in table_headers %}
               <th style="text-align: center">{{ tbl_header }}</th>
               {% endfor %}
@@ -75,7 +76,7 @@
           <!-- Table header -->
           <thead>
             <tr>
-              <th style="padding-left: 12px">{{ division.division }}</th>
+              <th style="padding-left: 12px">{{ division.name }}</th>
               {% for tbl_header in table_headers %}
               <th style="text-align: center">{{ tbl_header }}</th>
               {% endfor %}

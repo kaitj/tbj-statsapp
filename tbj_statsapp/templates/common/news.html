@@ -1,12 +1,12 @@
 <!-- Header -->
-<div>
+<div style="margin-top: 8px;">
   <div class="row">
     <h3>News</h3>
   </div>
 </div>
 
-<div class="row" style="margin-top: 8px">
-  {% for image in league_news.image %}
+<div class="row" style="margin: 8px -8px 0 -16px;">
+  {% for image in recent_news.image %}
   <div class="col-3" style="padding: 0 16px">
     <div class="row">
       <img src="{{ image }}" style="padding: 0" />
@@ -21,18 +21,18 @@
       "
     >
       <a
-        href="{{ league_news.link[loop.index0] }}"
+        href="{{ recent_news.link[loop.index0] }}"
         target="_blank"
         style="
           color: var(--primary);
           font-weight: var(--bold);
           padding-top: 8px;
         "
-        >{{ league_news.title[loop.index0] }}</a
+        >{{ recent_news.title[loop.index0] }}</a
       >
       <div class="row" style="margin: 0; text-overflow: clip;">
-        {{ league_news.author[loop.index0] }} &#8226; {{
-        league_news.date[loop.index0] }}
+        {{ recent_news.author[loop.index0] }} &#8226; {{
+        recent_news.date[loop.index0] }}
       </div>
     </div>
   </div>

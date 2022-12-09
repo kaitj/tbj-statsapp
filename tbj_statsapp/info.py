@@ -1,5 +1,48 @@
+from datetime import datetime
+
+import xmltodict
+
+
+def get_recent_news(rss, request_session, team=None):
+    """Grab recent news for league / team"""
+
+    # TODO: implement updating of news feed to grab team news
+    if team:
+        rss = rss.replace("feeds", f"{team}/feeds")
+
+        # NEWS_RSS = "https://www.mlb.com/feeds/news/rss.xml"
+
+    feed = request_session.get(rss, allow_redirects=False)
+    entries = xmltodict.parse(feed.content)["rss"]["channel"]["item"]
+
+    # Dict to store relevant news information
+    news = {
+        "title": [],
+        "link": [],
+        "author": [],
+        "image": [],
+        "date": [],
+    }
+
+    # Grab most recent 4 news stories
+    for entry in entries[:4]:
+        news["title"].extend([entry["title"]])
+        news["link"].extend([entry["link"]])
+        news["author"].extend([entry["dc:creator"]])
+        news["image"].extend([entry["image"]["@href"]])
+
+        # Convert date to desired format
+        date = datetime.strptime(
+            entry["pubDate"],
+            "%a, %d %b %Y %H:%M:%S %Z",
+        )
+        news["date"] += [date.strftime("%b %d %Y")]
+
+    return news
+
+
 def get_standings(STATSAPI_URL, league, request_session):
-    """Function to grab and return league specific standings by division"""
+    """Grab and return league specific standings by division"""
     standings = request_session.get(
         f"{STATSAPI_URL}/api/v1/standings?leagueId={league}"
     ).json()
@@ -8,10 +51,11 @@ def get_standings(STATSAPI_URL, league, request_session):
 
 
 def get_division(STATSAPI_URL, standing, division_idx, request_session):
-    """Function to grab and return necessary data for a specific division"""
+    """Grab and return necessary data for a specific division"""
     division_standings = {
         "name": None,
         "team_ids": [],
+        "team_names": [],
         "abbreviations": [],
         "logos": [],
         "wins": [],
@@ -38,6 +82,11 @@ def get_division(STATSAPI_URL, standing, division_idx, request_session):
         division_standings["abbreviations"].extend(
             [team_info["teams"][0].get("abbreviation")]
         )
+        team_name = "".join(
+            name.strip().lower()
+            for name in team_info["teams"][0].get("teamName")
+        )
+        division_standings["team_names"].extend([team_name])
         division_standings["logos"].extend(
             [
                 f"https://www.mlbstatic.com/team-logos/{division_standings['team_ids'][-1]}.svg"

@@ -4,12 +4,14 @@ import requests
 from flask import current_app as app
 from flask import redirect, render_template
 
-from tbj_statsapp import news, standings
+from tbj_statsapp import info
 
 # Insert team name before feeds for team feeds
 # e.g. https://www.mlb.com/bluejays/feeds/news/rss.xml
 NEWS_RSS = "https://www.mlb.com/feeds/news/rss.xml"
 STATSAPI_URL = "https://statsapi.mlb.com/"
+
+request_session = requests.session()
 
 
 @app.route("/")
@@ -19,13 +21,11 @@ def index():
 
 
 @app.route("/teams")
-def teams():
-    """Render teams page"""
-    request_session = requests.session()
-
+def standing():
+    """Render teams / standings page"""
     # Get standing info
-    al_standings = standings.get_standings(STATSAPI_URL, 103, request_session)
-    nl_standings = standings.get_standings(STATSAPI_URL, 104, request_session)
+    al_standings = info.get_standings(STATSAPI_URL, 103, request_session)
+    nl_standings = info.get_standings(STATSAPI_URL, 104, request_session)
 
     # Sanity check to make sure both leagues have same number of divisions
     al_divisions, nl_divisions = [], []
@@ -33,26 +33,39 @@ def teams():
     if len(al_standings) == len(nl_standings):
         for idx in range(len(al_standings)):
             al_divisions.append(
-                standings.get_division(
+                info.get_division(
                     STATSAPI_URL, al_standings, idx, request_session
                 )
             )
             nl_divisions.append(
-                standings.get_division(
+                info.get_division(
                     STATSAPI_URL, nl_standings, idx, request_session
                 )
             )
         # TODO: Raise error / alternative computation
 
         # Get league news
-        league_news = news.get_recent_news(NEWS_RSS, request_session)
+        recent_news = info.get_recent_news(NEWS_RSS, request_session)
 
     return render_template(
-        "teams.html",
+        "standings.html",
         table_headers=table_headers,
-        al_divisions=al_divisions,
-        nl_divisions=nl_divisions,
-        league_news=league_news,
+        leagues=[al_divisions, nl_divisions],
+        recent_news=recent_news,
+    )
+
+
+@app.route("/<team_name>-<team_id>")
+def team_page(team_name, team_id):
+    """Render team specific page"""
+    # Get team info
+
+    # Get team specific news
+    recent_news = info.get_recent_news(NEWS_RSS, request_session, team_name)
+
+    return render_template(
+        "team.html",
+        recent_news=recent_news,
     )
 
 

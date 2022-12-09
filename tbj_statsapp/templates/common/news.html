@@ -1,0 +1,40 @@
+<!-- Header -->
+<div>
+  <div class="row">
+    <h3>News</h3>
+  </div>
+</div>
+
+<div class="row" style="margin-top: 8px">
+  {% for image in league_news.image %}
+  <div class="col-3" style="padding: 0 16px">
+    <div class="row">
+      <img src="{{ image }}" style="padding: 0" />
+    </div>
+    <div
+      class="row"
+      style="
+        background-color: var(--row);
+        border-bottom-left-radius: var(--radius);
+        border-bottom-right-radius: var(--radius);
+        height: 40%;
+      "
+    >
+      <a
+        href="{{ league_news.link[loop.index0] }}"
+        target="_blank"
+        style="
+          color: var(--primary);
+          font-weight: var(--bold);
+          padding-top: 8px;
+        "
+        >{{ league_news.title[loop.index0] }}</a
+      >
+      <div class="row" style="margin: 0; text-overflow: clip;">
+        {{ league_news.author[loop.index0] }} &#8226; {{
+        league_news.date[loop.index0] }}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>

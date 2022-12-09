@@ -26,37 +26,36 @@
       type="text/css"
     />
 
-    <!-- JS to highlight active page -->
-      <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-      <script>
-        $(function(){
-          $('a').each(function(){
-              if ($(this).prop('href') == window.location.href) {
-                  $(this).addClass('active'); $(this).parents('li').addClass('active');
-              }
-          });
+    <!-- JS -->
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <!-- Highlight active page -->
+    <script type="text/javascript">
+      $(function(){
+        $('a').each(function(){
+          if ($(this).prop('href') == window.location.href) {
+                $(this).addClass('active'); $(this).parents('li').addClass('active');
+            }
         });
-      </script>
+      });
+    </script>
   </head>
 
 
-  <!-- SET OVERLINE OFFSET -->
+  <!-- TODO: SET OVERLINE OFFSET -->
   <body class="d-flex flex-column h-100">
     <div class="row" id="navbar">
       <header class="container">
         <nav class="navbar navbar-expand">
-          <a class="navbar-brand" href="/">
-            <img
-              class="img-fluid"
-              src="{{ url_for('static', filename='images/Logo/homebase-logo.png') }}"
-              alt="Homebase logo"
-              style="max-width: 25%"
-            />
-          </a>
+          <img
+            class="navbar-brand img-fluid"
+            src="{{ url_for('static', filename='images/Logo/homebase-logo.png') }}"
+            alt="Homebase logo"
+            style="max-width: 140px;"
+          />
           <div class="ms-auto">
             <ul class="navbar-nav">
               <li class="nav-item"><a class="nav-link" href="/teams">Teams</a></li>
-              <li class="nav-item"><a class="nav-link" href="#">Leaderboard</a></li>
+              <li class="nav-item"><a class="nav-link" href="/leaderboard">Leaderboards</a></li>
             </ul>
           </div>
         </nav>

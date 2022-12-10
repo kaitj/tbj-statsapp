@@ -44,7 +44,7 @@ def create_app():
 
     # Route views without Flask blueprints
     with app.app_context():
-        from tbj_statsapp import views
+        from tbj_statsapp import views  # noqa: F401
 
     return app
 

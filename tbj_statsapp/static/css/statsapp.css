@@ -35,6 +35,13 @@ body {
     max-width: var(--container);
 }
 
+h2 {
+  color: var(--row);
+  font-weight: var(--bold);
+  font-size: calc(var(--headings) + 4px);
+  padding-left: 0 !important;
+}
+
 h3 {
   color: var(--row);
   font-weight: var(--bold);
@@ -116,5 +123,38 @@ tbody tr:last-child td:last-child {
 
 tbody tr td {
   padding: 4px 0;
+  font-size: var(--text);
+}
+
+/* Player type toggle */
+.player-toggle {
+  background-color: var(--row);
+  color: var(--secondary);
+  font-weight: var(--bold);
+  font-size: var(--text);
+  padding: 5px;
+  border-radius: 30px;
+  display: inline-block;
+}
+
+.player-toggle [name="playerType"] {
+  display: none
+}
+
+.player-toggle input[type="radio"]+label {
+  background-color: var(--row);
+  color: var(--secondary);
+  font-weight: var(--bold);
+  font-size: var(--text);
+  padding: 5px 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.player-toggle input[type="radio"]:checked+label {
+  background-color: var(--secondary);
+  color: var(--row);
+  font-weight: var(--bold);
   font-size: var(--text);
 }

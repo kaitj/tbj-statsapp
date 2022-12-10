@@ -1,7 +1,9 @@
 {% extends "base.html" %}
-{% block title %} | {% endblock %}
+{% block title %} | {{ team_info.name }}{% endblock %}
 
 {% block content %}
+    <!-- Team header -->
+    {% include "common/team_info.html" %}
 
     <!-- Grab team related news -->
     {% include "common/news.html" %}

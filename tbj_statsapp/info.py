@@ -193,10 +193,7 @@ def get_team_info(team_id, session=REQUEST_SESSION, stats_api=STATSAPI_URL):
 def get_team_roster(
     team_id, season, session=REQUEST_SESSION, stats_api=STATSAPI_URL
 ):
-    """Get team rosters, grouped by hitters and pitchers
-
-    TODO: Replace player stats with function
-    """
+    """Get team rosters, grouped by hitters and pitchers"""
     team_api = session.get(
         f"{stats_api}/api/v1/teams/{team_id}/roster"
     ).json()["roster"]
@@ -359,4 +356,4 @@ def get_team_roster(
                 ]
             )
 
-            return team_rosters
+    return team_rosters

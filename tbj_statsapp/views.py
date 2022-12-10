@@ -52,6 +52,37 @@ def team_page(team_name, team_id):
     team_roster = info.get_team_roster(
         int(team_id), str(team_info.get("season"))
     )
+    team_roster["pitcher_header"] = [
+        "Pos",
+        "#",
+        "Pitcher",
+        "Age",
+        "T",
+        "IP",
+        "ERA",
+        "SO",
+        "BB",
+        "S0%",
+        "BB%",
+        "HR/9",
+        "OPS",
+    ]
+    team_roster["hitter_header"] = [
+        "Age",
+        "B",
+        "T",
+        "PA",
+        "H",
+        "2B",
+        "3B",
+        "HR",
+        "SB",
+        "S0%",
+        "BB%",
+        "AVG",
+        "OBP",
+        "OPS",
+    ]
 
     # Get team specific news
     recent_news = info.get_recent_news(team_name)

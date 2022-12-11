@@ -55,26 +55,33 @@ h3 {
     background-color: #204377;
 }
 
+.nav {
+  padding-top: 0px;
+}
+
 .nav-link {
     color: var(--row);
     font-weight: var(--normal);
-    padding-left: 20px !important;
-    padding-right: 0 !important;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding-top: 4px;
 }
 
-a.nav-link:hover {
-    color: var(--offset);
-    font-weight: var(--normal);
-    text-decoration-line: overline;
-    text-decoration-thickness: 1px;
+.nav-link:hover {
+  color: var(--offset);
+  font-weight: var(--normal);
+  border-top-style: solid;
+  border-top-width: 1px;
+  padding-top: 3px;
 }
 
-a.nav-link.active {
+.nav-link.active {
     color: var(--row);
     font-weight: var(--bold);
-    text-decoration-line: overline;
-    text-decoration-thickness: 3px;
-}
+    border-top-style: solid;
+    border-top-width: 3px;
+    padding-top: 0;
+} */
 
 /* Body */
 #body {

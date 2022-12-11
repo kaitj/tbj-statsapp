@@ -1,33 +1,16 @@
 from collections import defaultdict
 from datetime import datetime
 
-import requests
-import xmltodict
-
-from tbj_statsapp.utils import rank_map
-
-NEWS_RSS = "https://www.mlb.com/feeds/news/rss.xml"
-STATSAPI_URL = "https://statsapi.mlb.com/"
-REQUEST_SESSION = requests.session()
+from tbj_statsapp import api, utils
 
 
-def get_recent_news(team=None, session=REQUEST_SESSION, rss=NEWS_RSS):
-    """Grab recent news for league / team"""
-
-    # TODO: implement updating of news feed to grab team news
-    if team:
-        rss = rss.replace("feeds", f"{team}/feeds")
-
-        # NEWS_RSS = "https://www.mlb.com/feeds/news/rss.xml"
-
-    feed = session.get(rss, allow_redirects=False)
-    entries = xmltodict.parse(feed.content)["rss"]["channel"]["item"]
-
-    # Dict to store relevant news information
-    news = defaultdict(list)
+def get_recent_news(session, team=None):
+    """Grab recent league / team news"""
+    news_entries = api.get_news(session=session, team=team)
 
     # Grab most recent 4 news stories
-    for entry in entries[:4]:
+    news = defaultdict(list)
+    for entry in news_entries[:4]:
         news["title"].extend([entry.get("title")])
         news["link"].extend([entry.get("link")])
         news["author"].extend([entry.get("dc:creator")])
@@ -43,81 +26,29 @@ def get_recent_news(team=None, session=REQUEST_SESSION, rss=NEWS_RSS):
     return news
 
 
-def get_player_info(player_id, stats_api=STATSAPI_URL):
-    """Get player information"""
-    player_info = requests.get(f"{stats_api}/api/v1/people/{player_id}").json()
-
-    return player_info.get("people")[0]
-
-
-def get_player_stats(player_id, category, season=None, stats_api=STATSAPI_URL):
-    """Get stats for a given player for a given category"""
-    stats = (
-        requests.get(
-            f"{stats_api}/api/v1/people/{player_id}?hydrate=stats"
-            + f"(group=[{category}],type=[yearByYear])"
-        )
-        .json()["people"][0]
-        .get("stats")
-    )
-
-    # If player has never played in MLB
-    if not stats:
-        return {}, None
-    stats = stats[0].get("splits")
-
-    if season:
-        for i in range(len(stats)):
-            # Get total season stats (if multiple teams)
-            if stats[i]["season"] == season and "team" not in stats[i].keys():
-                return stats[i].get("stat"), None
-            # If didn't pitch previous season, get last season pitched
-            else:
-                return stats[-1].get("stat"), stats[-1].get("season")
-
-    return stats
-
-
-def get_standings(league, session=REQUEST_SESSION, stats_api=STATSAPI_URL):
-    """Grab and return league specific standings by division"""
-    standings = session.get(
-        f"{stats_api}/api/v1/standings?leagueId={league}"
-    ).json()
-
-    return standings.get("records")
-
-
-def get_division(
-    standing, division_idx, session=REQUEST_SESSION, stats_api=STATSAPI_URL
-):
+def get_divisions(standing, division_idx, session):
     """Grab and return necessary data for a specific division"""
     division_standings = defaultdict(list)
 
     for i, team_record in enumerate(standing[division_idx]["teamRecords"]):
         # Grab division info if first team processed
         if i == 0:
-            division_name = (
-                session.get(
-                    f"{stats_api}/"
-                    + f"{standing[division_idx]['division'].get('link')}"
-                )
-                .json()["divisions"][0]
-                .get("nameShort")
+            division_name = api.get_division(
+                division_id=standing[division_idx]["division"].get("id"),
+                session=session,
             )
-            division_standings["name"] = division_name
+            division_standings["name"] = division_name.get("nameShort")
 
         # Team-related information
         division_standings["team_ids"].append(team_record["team"].get("id"))
-        team_info = session.get(
-            f"{stats_api}/api/v1/teams/"
-            + f"{division_standings.get('team_ids')[-1]}"
-        ).json()
+        team_api = api.get_team(
+            team_id=team_record["team"].get("id"), session=session
+        )
         division_standings["abbreviations"].extend(
-            [team_info["teams"][0].get("abbreviation")]
+            [team_api.get("abbreviation")]
         )
         team_name = "".join(
-            name.strip().lower()
-            for name in team_info["teams"][0].get("teamName")
+            name.strip().lower() for name in team_api.get("teamName")
         )
         division_standings["team_names"].extend([team_name])
         division_standings["logos"].extend(
@@ -148,25 +79,23 @@ def get_division(
     return division_standings
 
 
-def get_team_info(team_id, session=REQUEST_SESSION, stats_api=STATSAPI_URL):
+def get_team_info(team_id, session):
     """Get team related info"""
-    team_api = session.get(f"{stats_api}/api/v1/teams/{team_id}").json()[
-        "teams"
-    ][0]
-    standings = get_standings(team_api["league"]["id"])[0]["teamRecords"]
+    team_api = api.get_team(team_id, session=session)
+    standings = api.get_standings(team_api["league"]["id"], session=session,)[
+        0
+    ]["teamRecords"]
 
     # Get team info
     team_info = defaultdict()
     team_info["team_id"] = team_id
     team_info["logo"] = f"https://www.mlbstatic.com/team-logos/{team_id}.svg"
     team_info["name"] = team_api.get("name")
-    team_info["division"] = (
-        session.get(
-            f'{stats_api}/api/v1/divisions/{team_api["division"]["id"]}'
-        )
-        .json()["divisions"][0]
-        .get("nameShort")
-    )
+    team_info["abbreviation"] = team_api.get("abbreviation")
+    team_info["division"] = api.get_division(
+        division_id=team_api["division"].get("id"),
+        session=session,
+    ).get("nameShort")
     team_info["venue"] = team_api["venue"].get("name")
     team_info["venue_img"] = (
         "https://prod-gameday.mlbstatic.com/"
@@ -179,7 +108,9 @@ def get_team_info(team_id, session=REQUEST_SESSION, stats_api=STATSAPI_URL):
     for team_standing in standings:
         if team_standing["team"].get("id") == team_id:
             break
-    team_info["division_rank"] = rank_map(int(team_standing["divisionRank"]))
+    team_info["division_rank"] = utils.rank_map(
+        int(team_standing["divisionRank"])
+    )
     team_info["record"] = (
         f'{team_standing["leagueRecord"].get("wins")}-'
         + f'{team_standing["leagueRecord"].get("losses")} '
@@ -190,51 +121,53 @@ def get_team_info(team_id, session=REQUEST_SESSION, stats_api=STATSAPI_URL):
     return team_info
 
 
-def get_team_roster(
-    team_id, season, session=REQUEST_SESSION, stats_api=STATSAPI_URL
-):
+def get_team_roster(team_id, season, session):
     """Get team rosters, grouped by hitters and pitchers"""
-    team_api = session.get(
-        f"{stats_api}/api/v1/teams/{team_id}/roster"
-    ).json()["roster"]
+    roster = api.get_rosters(team_id=team_id, session=session)
 
     # Default value for empty stats
     null = "-"
-    team_rosters = defaultdict(lambda: defaultdict(list))
 
-    for player in team_api:
-        player_info = get_player_info(player["person"].get("id"))
+    team_rosters = defaultdict(lambda: defaultdict(list))
+    for player in roster:
+        player_api = api.get_player(
+            player_id=player["person"].get("id"),
+            session=session,
+        )
         # Pitchers
-        if player_info["primaryPosition"].get("code") == "1":
-            pitching_stats, last_played_season = get_player_stats(
-                player_info.get("id"), "pitching", season
+        if player_api["primaryPosition"].get("code") == "1":
+            pitching_stats, last_played_season = api.get_player_stats(
+                player_id=player_api.get("id"),
+                category="pitching",
+                season=season,
+                session=session,
             )
 
             # Player info
-            team_rosters["pitchers"]["player_id"].append(player_info.get("id"))
+            team_rosters["pitchers"]["player_id"].append(player_api.get("id"))
             team_rosters["pitchers"]["position"].extend(
-                [player_info["primaryPosition"].get("abbreviation", null)]
+                [player_api["primaryPosition"].get("abbreviation", null)]
             )
             team_rosters["pitchers"]["jersey_number"].extend(
-                [player_info.get("primaryNumber", null)]
+                [player_api.get("primaryNumber", null)]
             )
             team_rosters["pitchers"]["photo"].extend(
                 [
                     "https://content.mlb.com/images/headshots/current/60x60/"
-                    + f"{player_info.get('id')}.png"
+                    + f"{player_api.get('id')}.png"
                 ]
             )
             team_rosters["pitchers"]["first_name"].extend(
-                [player_info.get("firstName")]
+                [player_api.get("firstName")]
             )
             team_rosters["pitchers"]["last_name"].extend(
-                [player_info.get("lastName")]
+                [player_api.get("lastName")]
             )
             team_rosters["pitchers"]["age"].extend(
-                [player_info.get("currentAge")]
+                [player_api.get("currentAge")]
             )
             team_rosters["pitchers"]["throw_hand"].extend(
-                [player_info["pitchHand"].get("code")]
+                [player_api["pitchHand"].get("code")]
             )
             team_rosters["pitchers"]["last_played"].extend(
                 [last_played_season]
@@ -275,37 +208,40 @@ def get_team_roster(
 
         # Hitters
         else:
-            hitting_stats, last_played_season = get_player_stats(
-                player_info.get("id"), "hitting", season
+            hitting_stats, last_played_season = api.get_player_stats(
+                player_id=player_api.get("id"),
+                category="hitting",
+                season=season,
+                session=session,
             )
             # Player info
-            team_rosters["hitters"]["player_id"].append(player_info.get("id"))
+            team_rosters["hitters"]["player_id"].append(player_api.get("id"))
             team_rosters["hitters"]["position"].extend(
-                [player_info["primaryPosition"].get("abbreviation", null)]
+                [player_api["primaryPosition"].get("abbreviation", null)]
             )
             team_rosters["hitters"]["jersey_number"].extend(
-                [player_info.get("primaryNumber", null)]
+                [player_api.get("primaryNumber", null)]
             )
             team_rosters["hitters"]["photo"].extend(
                 [
                     "https://content.mlb.com/images/headshots/current/60x60/"
-                    + f"{player_info.get('id')}.png"
+                    + f"{player_api.get('id')}.png"
                 ]
             )
             team_rosters["hitters"]["first_name"].extend(
-                [player_info.get("firstName")]
+                [player_api.get("firstName")]
             )
             team_rosters["hitters"]["last_name"].extend(
-                [player_info.get("lastName")]
+                [player_api.get("lastName")]
             )
             team_rosters["hitters"]["age"].extend(
-                [player_info.get("currentAge")]
+                [player_api.get("currentAge")]
             )
             team_rosters["hitters"]["bat_side"].extend(
-                [player_info["batSide"].get("code")]
+                [player_api["batSide"].get("code")]
             )
             team_rosters["hitters"]["throw_hand"].extend(
-                [player_info["pitchHand"].get("code")]
+                [player_api["pitchHand"].get("code")]
             )
             team_rosters["hitters"]["last_played"].extend([last_played_season])
 
@@ -357,3 +293,36 @@ def get_team_roster(
             )
 
     return team_rosters
+
+
+def get_leaders(category, session):
+    """Grab leaders for input category"""
+    category_leaders = api.get_category(
+        category=category,
+        session=session,
+    )["leaders"]
+
+    leaders = defaultdict(list)
+    for player in category_leaders:
+        # Get stat info
+        leaders["rank"].append(player.get("rank"))
+        leaders["value"].extend([player.get("value")])
+
+        # Get player info
+        player_api = api.get_player(
+            player_id=player["person"].get("id"),
+            session=session,
+        )
+        leaders["position"].extend(
+            [player_api["primaryPosition"].get("abbreviation")]
+        )
+        leaders["name"].extend([player_api.get("fullName")])
+        leaders["player_id"].append(player_api.get("id"))
+        leaders["player_photo"].extend(
+            [
+                "https://content.mlb.com/images/headshots/current/60x60/"
+                + f"{player_api.get('id')}.png"
+            ]
+        )
+
+    return leaders

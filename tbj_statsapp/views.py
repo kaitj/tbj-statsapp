@@ -1,12 +1,14 @@
 """Route requests with Flask"""
-
+import requests
 from flask import current_app as app
 from flask import redirect, render_template
 
-from tbj_statsapp import info
+from tbj_statsapp import api, info
 
 # Insert team name before feeds for team feeds
 # e.g. https://www.mlb.com/bluejays/feeds/news/rss.xml
+
+request_session = requests.session()
 
 
 @app.route("/")
@@ -19,20 +21,32 @@ def index():
 def standing():
     """Render teams / standings page"""
     # Get standing info
-    al_standings = info.get_standings(103)
-    nl_standings = info.get_standings(104)
+    al_standings = api.get_standings(league_id=103, session=request_session)
+    nl_standings = api.get_standings(league_id=104, session=request_session)
 
     # Sanity check to make sure both leagues have same number of divisions
     al_divisions, nl_divisions = [], []
     table_headers = ["W", "L", "Pct", "GB", "L10", "DIFF"]
     if len(al_standings) == len(nl_standings):
         for idx in range(len(al_standings)):
-            al_divisions.append(info.get_division(al_standings, idx))
-            nl_divisions.append(info.get_division(nl_standings, idx))
+            al_divisions.append(
+                info.get_divisions(
+                    standing=al_standings,
+                    division_idx=idx,
+                    session=request_session,
+                )
+            )
+            nl_divisions.append(
+                info.get_divisions(
+                    standing=nl_standings,
+                    division_idx=idx,
+                    session=request_session,
+                )
+            )
         # TODO: Raise error / alternative computation
 
-        # Get league news
-        recent_news = info.get_recent_news()
+    # Get league news
+    recent_news = info.get_recent_news(session=request_session)
 
     return render_template(
         "standings.html",
@@ -42,15 +56,62 @@ def standing():
     )
 
 
+@app.route("/leaderboards")
+def leaderboards():
+    """Render leaderboards page"""
+
+    # Get hitting leaders
+    hitter_categories = {
+        "homeRuns": "Home Runs",
+        "onBasePlusSlugging": "OPS",
+        "stolenBases": "Stolen Bases",
+    }
+    hitter_leaders = [
+        info.get_leaders(category=category,session=request_session)
+        for category in hitter_categories.keys()
+    ]
+
+    # Get pitching leaders
+    pitcher_categories = {
+        "earnedRunAverage": "ERA",
+        "strikeouts": "Strikeouts",
+        "saves": "Saves",
+    }
+    pitcher_leaders = [
+        info.get_leaders(category=category, session=request_session)
+        for category in pitcher_categories.keys()
+    ]
+
+    # Table header
+    table_headers = ["Rank", "Pos", "Player", "Value"]
+
+    # Get league news
+    recent_news = info.get_recent_news(
+        session=request_session,
+    )
+
+    return render_template(
+        "leaderboards.html",
+        recent_news=recent_news,
+        categories=[hitter_categories.values(), pitcher_categories.values()],
+        leaders=[hitter_leaders, pitcher_leaders],
+    )
+
+
 @app.route("/<team_name>-<team_id>")
 def team_page(team_name, team_id):
     """Render team specific page"""
     # Get team info
-    team_info = info.get_team_info(int(team_id))
+    team_info = info.get_team_info(
+        team_id=int(team_id),
+        session=request_session,
+    )
 
     # Get team roster
     team_roster = info.get_team_roster(
-        int(team_id), str(team_info.get("season"))
+        team_id=int(team_id),
+        season=str(team_info.get("season")),
+        session=request_session,
     )
     team_roster["pitcher_header"] = [
         "Age",
@@ -82,7 +143,7 @@ def team_page(team_name, team_id):
     ]
 
     # Get team specific news
-    recent_news = info.get_recent_news(team_name)
+    recent_news = info.get_recent_news(session=request_session, team=team_name)
 
     return render_template(
         "team.html",

@@ -58,32 +58,40 @@ def standing():
 
 @app.route("/leaderboards")
 def leaderboards():
-    """Render leaderboards page"""
+    """Render leaderboards page
+
+    TODO: Add team stats
+    """
 
     # Get hitting leaders
     hitter_categories = {
-        "homeRuns": "Home Runs",
+        "homeRuns": "HR",
         "onBasePlusSlugging": "OPS",
-        "stolenBases": "Stolen Bases",
+        "stolenBases": "SB",
     }
     hitter_leaders = [
-        info.get_leaders(category=category,session=request_session)
+        info.get_leaders(
+            category=category,
+            session=request_session,
+            player_type="hitting",
+        )
         for category in hitter_categories.keys()
     ]
 
     # Get pitching leaders
     pitcher_categories = {
         "earnedRunAverage": "ERA",
-        "strikeouts": "Strikeouts",
+        "strikeouts": "SO",
         "saves": "Saves",
     }
     pitcher_leaders = [
-        info.get_leaders(category=category, session=request_session)
+        info.get_leaders(
+            category=category,
+            player_type="pitching",
+            session=request_session,
+        )
         for category in pitcher_categories.keys()
     ]
-
-    # Table header
-    table_headers = ["Rank", "Pos", "Player", "Value"]
 
     # Get league news
     recent_news = info.get_recent_news(

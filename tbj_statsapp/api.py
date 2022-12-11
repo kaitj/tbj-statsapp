@@ -90,4 +90,4 @@ def get_category(category, session, stats_api=STATSAPI_URL):
         f"{stats_api}/api/v1/stats/leaders?leaderCategories={category}"
     ).json()
 
-    return category_leaders["leagueLeaders"][0]
+    return category_leaders["leagueLeaders"]

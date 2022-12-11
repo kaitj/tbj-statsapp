@@ -295,12 +295,18 @@ def get_team_roster(team_id, season, session):
     return team_rosters
 
 
-def get_leaders(category, session):
+def get_leaders(category, player_type, session):
     """Grab leaders for input category"""
     category_leaders = api.get_category(
         category=category,
         session=session,
-    )["leaders"]
+    )
+
+    # Grab correct player type
+    for i in range(len(category_leaders)):
+        if category_leaders[i].get("statGroup") == player_type:
+            category_leaders = category_leaders[i]["leaders"]
+            break
 
     leaders = defaultdict(list)
     for player in category_leaders:
@@ -316,7 +322,8 @@ def get_leaders(category, session):
         leaders["position"].extend(
             [player_api["primaryPosition"].get("abbreviation")]
         )
-        leaders["name"].extend([player_api.get("fullName")])
+        leaders["first_name"].extend([player_api.get("firstName")])
+        leaders["last_name"].extend([player_api.get("lastName")])
         leaders["player_id"].append(player_api.get("id"))
         leaders["player_photo"].extend(
             [

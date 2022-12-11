@@ -5,9 +5,6 @@ from flask import redirect, render_template
 
 from tbj_statsapp import api, info
 
-# Insert team name before feeds for team feeds
-# e.g. https://www.mlb.com/bluejays/feeds/news/rss.xml
-
 request_session = requests.session()
 
 

@@ -53,9 +53,6 @@ def team_page(team_name, team_id):
         int(team_id), str(team_info.get("season"))
     )
     team_roster["pitcher_header"] = [
-        "Pos",
-        "#",
-        "Pitcher",
         "Age",
         "T",
         "IP",

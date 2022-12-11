@@ -158,3 +158,9 @@ tbody tr td {
   font-weight: var(--bold);
   font-size: var(--text);
 }
+
+.playerStyle {
+  width: 48px;
+  text-align: center;
+  font-weight: var(--bold) !important;
+}

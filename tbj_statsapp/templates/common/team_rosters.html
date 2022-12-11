@@ -1,14 +1,14 @@
 <!-- Hitters -->
-<div class="row" style="margin-top: 32px" ;>
+<div class="row players" id="Hitters" style="margin-top: 32px" ;>
   <table>
     <!-- Table header -->
     <thead>
       <tr>
-        <th style="width: 4%; text-align: center">Pos</th>
-        <th style="width: 4%; text-align: center">#</th>
-        <th style="width: 36%">Player</th>
+        <th class="playerStyle">Pos</th>
+        <th class="playerStyle">#</th>
+        <th style="width: 432px">Player</th>
         {% for tbl_header in team_roster.hitter_header %}
-        <th style="width: 4%; text-align: center">{{ tbl_header }}</th>
+        <th class="playerStyle">{{ tbl_header }}</th>
         {% endfor %}
       </tr>
     </thead>
@@ -16,13 +16,16 @@
     <tbody>
       {% for player_id in team_roster.hitters.player_id %}
       <tr>
-        <td style="width: 4%; text-align: center">
+        <td class="playerStyle" style="font-weight: var(--normal) !important">
           {{ team_roster.hitters.position[loop.index0] }}
         </td>
-        <td style="width: 4%; text-align: center; color: var(--secondary)">
+        <td
+          class="playerStyle"
+          style="font-weight: var(--normal) !important; color: var(--secondary)"
+        >
           {{ team_roster.hitters.jersey_number[loop.index0] }}
         </td>
-        <td style="width: 36%">
+        <td style="width: 432px">
           <div class="row">
             <div class="col-3">
               <!-- Replace photo with placeholder if image not found -->
@@ -44,7 +47,6 @@
               <!-- Note for players who have no played previously -->
               {% if team_roster.hitters.last_played[loop.index0] is none %}
               <sup>*</sup>
-              <!-- Fix matching -->
               {% elif team_roster.hitters.last_played[loop.index0]|int !=
               team_info.season|int %}
               <sup>+</sup>
@@ -52,48 +54,125 @@
             </div>
           </div>
         </td>
-        <td style="width: 4%; text-align: center; font-weight: var(--bold)">
-          {{ team_roster.hitters.age[loop.index0] }}
-        </td>
-        <td style="width: 4%; text-align: center; font-weight: var(--bold)">
+        <td class="playerStyle">{{ team_roster.hitters.age[loop.index0] }}</td>
+        <td class="playerStyle">
           {{ team_roster.hitters.bat_side[loop.index0] }}
         </td>
-        <td style="width: 4%; text-align: center; font-weight: var(--bold)">
+        <td class="playerStyle">
           {{ team_roster.hitters.throw_hand[loop.index0] }}
         </td>
-        <td style="width: 4%; text-align: center; font-weight: var(--bold)">
+        <td class="playerStyle">
           {{ team_roster.hitters.plate_appearances[loop.index0] }}
         </td>
-        <td style="width: 4%; text-align: center; font-weight: var(--bold)">
-          {{ team_roster.hitters.hits[loop.index0] }}
-        </td>
-        <td style="width: 4%; text-align: center; font-weight: var(--bold)">
+        <td class="playerStyle">{{ team_roster.hitters.hits[loop.index0] }}</td>
+        <td class="playerStyle">
           {{ team_roster.hitters.doubles[loop.index0] }}
         </td>
-        <td style="width: 4%; text-align: center; font-weight: var(--bold)">
+        <td class="playerStyle">
           {{ team_roster.hitters.triples[loop.index0] }}
         </td>
-        <td style="width: 4%; text-align: center; font-weight: var(--bold)">
-          {{ team_roster.hitters.hrs[loop.index0] }}
-        </td>
-        <td style="width: 4%; text-align: center; font-weight: var(--bold)">
+        <td class="playerStyle">{{ team_roster.hitters.hrs[loop.index0] }}</td>
+        <td class="playerStyle">
           {{ team_roster.hitters.stolen_bases[loop.index0] }}
         </td>
-        <td style="width: 4%; text-align: center; font-weight: var(--bold)">
+        <td class="playerStyle">
           {{ team_roster.hitters.strikeout_pct[loop.index0] }}
         </td>
-        <td style="width: 4%; text-align: center; font-weight: var(--bold)">
+        <td class="playerStyle">
           {{ team_roster.hitters.bb_pct[loop.index0] }}
         </td>
-        <td style="width: 4%; text-align: center; font-weight: var(--bold)">
-          {{ team_roster.hitters.avg[loop.index0] }}
+        <td class="playerStyle">{{ team_roster.hitters.avg[loop.index0] }}</td>
+        <td class="playerStyle">{{ team_roster.hitters.obp[loop.index0] }}</td>
+        <td class="playerStyle">{{ team_roster.hitters.ops[loop.index0] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p style="color: var(--row); font-size: var(--text); margin-top: 8px">
+    <em><sup>*</sup>Has not played in the MLB</em>
+    <br />
+    <em><sup>+</sup>Stats from last played MLB season</em>
+  </p>
+</div>
+
+<!-- Pitchers -->
+<div class="row players" id="Pitchers" style="margin-top: 32px" ;>
+  <table>
+    <!-- Table header -->
+    <thead>
+      <tr>
+        <th class="playerStyle">Pos</th>
+        <th class="playerStyle">#</th>
+        <th style="width: 528px">Pitcher</th>
+        {% for tbl_header in team_roster.pitcher_header %}
+        <th class="playerStyle">{{ tbl_header }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <!-- Table info -->
+    <tbody>
+      {% for player_id in team_roster.pitchers.player_id %}
+      <tr>
+        <td class="playerStyle" style="font-weight: var(--normal) !important">
+          {{ team_roster.pitchers.position[loop.index0] }}
         </td>
-        <td style="width: 4%; text-align: center; font-weight: var(--bold)">
-          {{ team_roster.hitters.obp[loop.index0] }}
+        <td
+          class="playerStyle"
+          style="color: var(--secondary); font-weight: var(--normal) !important"
+        >
+          {{ team_roster.pitchers.jersey_number[loop.index0] }}
         </td>
-        <td style="width: 4%; text-align: center; font-weight: var(--bold)">
-          {{ team_roster.hitters.ops[loop.index0] }}
+        <td style="width: 528px">
+          <div class="row">
+            <div class="col-3">
+              <!-- Replace photo with placeholder if image not found -->
+              <img
+                src="{{ team_roster.pitchers.photo[loop.index0] }}"
+                onerror="this.onerror=null;this.src='https://content.mlb.com/images/headshots/current/60x60/generic.png';"
+                alt="Player photo"
+                style="max-height: 40px"
+              />
+            </div>
+            <div class="col-9" style="margin: auto 0 auto -90px">
+              <a
+                href="/{{ team_roster.pitchers.first_name[loop.index0] }}-{{ team_roster.pitchers.last_name[loop.index0] }}-{{ player_id }}"
+                style="color: var(--primary); font-weight: var(--bold)"
+              >
+                {{ team_roster.pitchers.last_name[loop.index0] }}, {{
+                team_roster.pitchers.first_name[loop.index0] }}
+              </a>
+              <!-- Note for players who have no played previously -->
+              {% if team_roster.pitchers.last_played[loop.index0] is none %}
+              <sup>*</sup>
+              {% elif team_roster.pitchers.last_played[loop.index0]|int !=
+              team_info.season|int %}
+              <sup>+</sup>
+              {% endif %}
+            </div>
+          </div>
         </td>
+        <td class="playerStyle">{{ team_roster.pitchers.age[loop.index0] }}</td>
+        <td class="playerStyle">
+          {{ team_roster.pitchers.throw_hand[loop.index0] }}
+        </td>
+        <td class="playerStyle">{{ team_roster.pitchers.ip[loop.index0] }}</td>
+        <td class="playerStyle">{{ team_roster.pitchers.era[loop.index0] }}</td>
+        <td class="playerStyle">
+          {{ team_roster.pitchers.strikeouts[loop.index0] }}
+        </td>
+        <td class="playerStyle">
+          {{ team_roster.pitchers.base_on_balls[loop.index0] }}
+        </td>
+        <td class="playerStyle">
+          {{ team_roster.pitchers.strikeout_pct[loop.index0] }}
+        </td>
+        <td class="playerStyle">
+          {{ team_roster.pitchers.bb_pct[loop.index0] }}
+        </td>
+        <td class="playerStyle">
+          {{ team_roster.pitchers.hr_per_9[loop.index0] }}
+        </td>
+        <td class="playerStyle">{{ team_roster.pitchers.ops[loop.index0] }}</td>
       </tr>
       {% endfor %}
     </tbody>

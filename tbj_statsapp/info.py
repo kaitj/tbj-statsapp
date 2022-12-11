@@ -82,9 +82,14 @@ def get_divisions(standing, division_idx, session):
 def get_team_info(team_id, session):
     """Get team related info"""
     team_api = api.get_team(team_id, session=session)
-    standings = api.get_standings(team_api["league"]["id"], session=session,)[
-        0
-    ]["teamRecords"]
+    league_standings = api.get_standings(
+        team_api["league"]["id"], session=session
+    )
+
+    for standings in league_standings:
+        if standings["division"]["id"] == team_api["division"].get("id"):
+            standings = standings["teamRecords"]
+            break
 
     # Get team info
     team_info = defaultdict()

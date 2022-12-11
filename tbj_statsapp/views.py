@@ -92,6 +92,12 @@ def team_page(team_name, team_id):
     )
 
 
+@app.route("/<player_first_name>-<player_last_name>-<player_id>")
+def player_page(player_first_name, player_last_name, player_id):
+    """Render team specific page"""
+    return redirect("404.html")
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     """Render 404 page"""

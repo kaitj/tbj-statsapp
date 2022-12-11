@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %} | Teams{% endblock %}
+
+{% block content %}
+  <!-- Division standings -->
+  {% include "standalone/divisions.html" %}
+
+  <!-- League news -->
+  {% include "common/news.html" %}
+{% endblock %}

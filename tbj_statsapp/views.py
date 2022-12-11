@@ -1,15 +1,12 @@
 """Route requests with Flask"""
 
-import requests
 from flask import current_app as app
 from flask import redirect, render_template
 
-from tbj_statsapp import news, standings
+from tbj_statsapp import info
 
 # Insert team name before feeds for team feeds
 # e.g. https://www.mlb.com/bluejays/feeds/news/rss.xml
-NEWS_RSS = "https://www.mlb.com/feeds/news/rss.xml"
-STATSAPI_URL = "https://statsapi.mlb.com/"
 
 
 @app.route("/")
@@ -19,41 +16,86 @@ def index():
 
 
 @app.route("/teams")
-def teams():
-    """Render teams page"""
-    request_session = requests.session()
-
+def standing():
+    """Render teams / standings page"""
     # Get standing info
-    al_standings = standings.get_standings(STATSAPI_URL, 103, request_session)
-    nl_standings = standings.get_standings(STATSAPI_URL, 104, request_session)
+    al_standings = info.get_standings(103)
+    nl_standings = info.get_standings(104)
 
     # Sanity check to make sure both leagues have same number of divisions
     al_divisions, nl_divisions = [], []
     table_headers = ["W", "L", "Pct", "GB", "L10", "DIFF"]
     if len(al_standings) == len(nl_standings):
         for idx in range(len(al_standings)):
-            al_divisions.append(
-                standings.get_division(
-                    STATSAPI_URL, al_standings, idx, request_session
-                )
-            )
-            nl_divisions.append(
-                standings.get_division(
-                    STATSAPI_URL, nl_standings, idx, request_session
-                )
-            )
+            al_divisions.append(info.get_division(al_standings, idx))
+            nl_divisions.append(info.get_division(nl_standings, idx))
         # TODO: Raise error / alternative computation
 
         # Get league news
-        league_news = news.get_recent_news(NEWS_RSS, request_session)
+        recent_news = info.get_recent_news()
 
     return render_template(
-        "teams.html",
+        "standings.html",
         table_headers=table_headers,
-        al_divisions=al_divisions,
-        nl_divisions=nl_divisions,
-        league_news=league_news,
+        leagues=[al_divisions, nl_divisions],
+        recent_news=recent_news,
     )
+
+
+@app.route("/<team_name>-<team_id>")
+def team_page(team_name, team_id):
+    """Render team specific page"""
+    # Get team info
+    team_info = info.get_team_info(int(team_id))
+
+    # Get team roster
+    team_roster = info.get_team_roster(
+        int(team_id), str(team_info.get("season"))
+    )
+    team_roster["pitcher_header"] = [
+        "Age",
+        "T",
+        "IP",
+        "ERA",
+        "SO",
+        "BB",
+        "S0%",
+        "BB%",
+        "HR/9",
+        "OPS",
+    ]
+    team_roster["hitter_header"] = [
+        "Age",
+        "B",
+        "T",
+        "PA",
+        "H",
+        "2B",
+        "3B",
+        "HR",
+        "SB",
+        "S0%",
+        "BB%",
+        "AVG",
+        "OBP",
+        "OPS",
+    ]
+
+    # Get team specific news
+    recent_news = info.get_recent_news(team_name)
+
+    return render_template(
+        "team.html",
+        team_info=team_info,
+        team_roster=team_roster,
+        recent_news=recent_news,
+    )
+
+
+@app.route("/<player_first_name>-<player_last_name>-<player_id>")
+def player_page(player_first_name, player_last_name, player_id):
+    """Render team specific page"""
+    return redirect("404.html")
 
 
 @app.errorhandler(404)

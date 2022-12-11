@@ -1,0 +1,60 @@
+<div class="row">
+  <!-- Logo -->
+  <div class="col-1" style="padding: 0">
+    <div
+      style="
+        background: var(--row);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        aspect-ratio: 1/1;
+      "
+    >
+      <img
+        src="{{ team_info.logo }}"
+        alt="Team logo"
+        style="padding: 12px; height: 95%;"
+      />
+    </div>
+  </div>
+
+  <!-- Team info -->
+  <div class="col-7" style="padding-left: 24px">
+    <h2 style="margin-top: 32px; margin-bottom: 4px">{{ team_info.name }}</h2>
+    <div class="row">
+      <div class="col-4" style="color: var(--secondary)">
+        {{ team_info.division_rank }} in {{ team_info.division }}
+      </div>
+      <div class="col-8" style="color: var(--row); margin-left: -96px">
+        {{ team_info.record }} &#8226; {{ team_info.gb }} GB
+      </div>
+    </div>
+  </div>
+
+  <!-- Filler -->
+  <div class="col-2"></div>
+
+  <!-- Toggle -->
+  <div class="col-2" style="padding: 0; margin-top: 42px; margin-bottom: 4px">
+    <div class="player-toggle">
+      <!-- Hitters -->
+      <input
+        type="radio"
+        id="player-toggle-hitters"
+        name="playerType"
+        value="Hitters"
+        checked
+      />
+      <label class="radio-button" for="player-toggle-hitters">Hitters</label>
+      <!-- Pitchers  -->
+      <input
+        type="radio"
+        id="player-toggle-pitchers"
+        name="playerType"
+        value="Pitchers"
+      />
+      <label class="radio-button" for="player-toggle-pitchers">Pitchers</label>
+    </div>
+  </div>
+</div>

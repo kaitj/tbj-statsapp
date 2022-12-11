@@ -1,0 +1,73 @@
+<!-- Header -->
+<div>
+  <div class="row">
+    <h3>Teams</h3>
+  </div>
+
+  <div class="row">
+    <!-- Split by league (AL, NL) -->
+    {% for league in leagues %}
+    <div class="col-6">
+      <!-- Split by division (East, Central, West) -->
+      {% for division in league %}
+      <div class="row division" style="padding-right: 7px">
+        <table>
+          <!-- Table header -->
+          <thead>
+            <tr>
+              <th style="padding-left: 12px">{{ division.name }}</th>
+              {% for tbl_header in table_headers %}
+              <th style="text-align: center">{{ tbl_header }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <!-- Table info -->
+          <tbody>
+            {% for team in division.team_ids %}
+            <tr>
+              <td style="width: 40%">
+                <div class="row">
+                  <div class="col-3" style="text-align: center">
+                    <img
+                      style="max-height: 20px"
+                      src="{{ division.logos[loop.index0] }}"
+                    />
+                  </div>
+                  <div class="col-9" style="margin-left: -24px">
+                    <a
+                      class="teamName"
+                      href="/{{ division.team_names[loop.index0] }}-{{ division.team_ids[loop.index0] }}"
+                      style="color: var(--primary); font-weight: var(--bold)"
+                      >{{ division.abbreviations[loop.index0] }}</a
+                    >
+                  </div>
+                </div>
+              </td>
+              <td style="width: 10%; text-align: center">
+                {{ division.wins[loop.index0] }}
+              </td>
+              <td style="width: 10%; text-align: center">
+                {{ division.losses[loop.index0] }}
+              </td>
+              <td style="width: 10%; text-align: center">
+                {{ division.pct[loop.index0] }}
+              </td>
+              <td style="width: 10%; text-align: center">
+                {{ division.gb[loop.index0] }}
+              </td>
+              <td style="width: 10%; text-align: center">
+                {{ division.l10[loop.index0] }}
+              </td>
+              <td style="width: 10%; text-align: center">
+                {{ division.diff[loop.index0] }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+</div>

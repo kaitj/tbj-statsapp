@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %} | {{ team_info.name }}{% endblock %}
+
+{% block content %}
+    <!-- Team header -->
+    {% include "common/team_info.html" %}
+
+    <!-- Team rosters -->
+    {% include "common/team_rosters.html" %}
+
+    <!-- Grab team related news -->
+    {% include "common/news.html" %}
+{% endblock %}

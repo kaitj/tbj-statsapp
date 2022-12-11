@@ -9,9 +9,7 @@
     />
     <meta name="author" content="Jason Kai" />
 
-    <title>
-      Stats App{% block title %}{% endblock %}
-    </title>
+    <title>Stats App{% block title %}{% endblock %}</title>
 
     <!-- Boostrap Core CSS -->
     <link
@@ -25,21 +23,7 @@
       href="{{ url_for('static', filename='css/statsapp.css') }}"
       type="text/css"
     />
-
-    <!-- JS -->
-    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <!-- Highlight active page -->
-    <script type="text/javascript">
-      $(function(){
-        $('a').each(function(){
-          if ($(this).prop('href') == window.location.href) {
-                $(this).addClass('active'); $(this).parents('li').addClass('active');
-            }
-        });
-      });
-    </script>
   </head>
-
 
   <!-- TODO: SET OVERLINE OFFSET -->
   <body class="d-flex flex-column h-100">
@@ -50,12 +34,16 @@
             class="navbar-brand img-fluid"
             src="{{ url_for('static', filename='images/Logo/homebase-logo.png') }}"
             alt="Homebase logo"
-            style="max-width: 140px;"
+            style="max-width: 140px"
           />
           <div class="ms-auto">
             <ul class="navbar-nav">
-              <li class="nav-item"><a class="nav-link" href="/teams">Teams</a></li>
-              <li class="nav-item"><a class="nav-link" href="/leaderboard">Leaderboards</a></li>
+              <li class="nav-item">
+                <a class="nav-link" href="/teams">Teams</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/leaderboards">Leaderboards</a>
+              </li>
             </ul>
           </div>
         </nav>
@@ -63,11 +51,11 @@
     </div>
 
     <main>
-      <div class="container" id="body">
-        {% block content %}{% endblock %}
-      </div>
+      <div class="container" id="body">{% block content %}{% endblock %}</div>
     </main>
 
-
+    <!-- JQuery -->
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
   </body>
 </html>

@@ -34,6 +34,7 @@ def standing():
 
         if len(al_standings) == len(nl_standings):
             for idx in range(len(al_standings)):
+                # Get divisions
                 flask_session["al_divisions"].append(
                     info.get_divisions(
                         standing=al_standings,
@@ -48,6 +49,20 @@ def standing():
                         session=request_session,
                     )
                 )
+                # Get teamids
+                for idx, name in enumerate(
+                    flask_session["al_divisions"][-1]["team_names"]
+                ):
+                    flask_session[name] = flask_session["al_divisions"][-1][
+                        "team_ids"
+                    ][idx]
+                for idx, name in enumerate(
+                    flask_session["nl_divisions"][-1]["team_names"]
+                ):
+                    flask_session[name] = flask_session["nl_divisions"][-1][
+                        "team_ids"
+                    ][idx]
+
         # TODO: Raise error / alternative computation
 
     # Get league news
@@ -111,14 +126,15 @@ def leaderboards():
     )
 
 
-@app.route("/<team_name>-<team_id>")
-def team_page(team_name, team_id):
+@app.route("/<team_name>")
+def team_page(team_name):
     """Render team specific page"""
+    team_id = flask_session.get(team_name)
     # Get team info
     flask_session[f"{team_id}-info"] = flask_session.get(
         f"{team_id}-info",
         info.get_team_info(
-            team_id=int(team_id),
+            team_id=team_id,
             session=request_session,
         ),
     )
@@ -188,8 +204,6 @@ def team_page(team_name, team_id):
 @app.route("/<player_first_name>-<player_last_name>-<player_id>")
 def player_page(player_first_name, player_last_name, player_id):
     """Render team specific page"""
-    team_id = flask_session.get(str(player_id), "None")
-
     # Get player info
     flask_session[f"{player_id}-info"] = flask_session.get(
         f"{player_id}-info",
@@ -198,6 +212,8 @@ def player_page(player_first_name, player_last_name, player_id):
             session=request_session,
         ),
     )
+
+    team_id = flask_session.get(str(player_id), "None")
 
     # Get team info
     flask_session[f"{team_id}-info"] = flask_session.get(

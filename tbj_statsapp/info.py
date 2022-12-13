@@ -31,6 +31,7 @@ def get_divisions(standing, division_idx, session):
     division_standings = defaultdict(list)
 
     for i, team_record in enumerate(standing[division_idx]["teamRecords"]):
+        team_id = team_record["team"].get("id")
         # Grab division info if first team processed
         if i == 0:
             division_name = api.get_division(
@@ -40,10 +41,8 @@ def get_divisions(standing, division_idx, session):
             division_standings["name"] = division_name.get("nameShort")
 
         # Team-related information
-        division_standings["team_ids"].append(team_record["team"].get("id"))
-        team_api = api.get_team(
-            team_id=team_record["team"].get("id"), session=session
-        )
+        division_standings["team_ids"].append(team_id)
+        team_api = api.get_team(team_id=team_id, session=session)
         division_standings["abbreviations"].extend(
             [team_api.get("abbreviation")]
         )
@@ -134,7 +133,7 @@ def get_team_roster(team_id, season, session):
     # Default value for empty stats
     null = "-"
 
-    team_rosters = defaultdict(lambda: defaultdict(list))
+    team_rosters = defaultdict(defaultdict(list).copy)
     for player in roster:
         player_api = api.get_player(
             player_id=player["person"].get("id"),

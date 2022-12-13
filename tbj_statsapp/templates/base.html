@@ -29,7 +29,9 @@
     {% include "components/nav.html" %}
 
     <main>
-      <div class="container" id="body">{% block content %}{% endblock %}</div>
+      <div class="container" style="margin-top: 8px">
+        {% block content %}{% endblock %}
+      </div>
     </main>
 
     <!-- JQuery -->

@@ -7,7 +7,7 @@
         <th class="playerStyle">Pos</th>
         <th class="playerStyle">#</th>
         <th style="width: 432px">Player</th>
-        {% for tbl_header in team_roster.hitter_header %}
+        {% for tbl_header in hitter_header %}
         <th class="playerStyle">{{ tbl_header }}</th>
         {% endfor %}
       </tr>
@@ -104,7 +104,7 @@
         <th class="playerStyle">Pos</th>
         <th class="playerStyle">#</th>
         <th style="width: 528px">Pitcher</th>
-        {% for tbl_header in team_roster.pitcher_header %}
+        {% for tbl_header in pitcher_header %}
         <th class="playerStyle">{{ tbl_header }}</th>
         {% endfor %}
       </tr>

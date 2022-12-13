@@ -21,7 +21,6 @@ pre-commit = "^2.20.0"
 yamlfix = "^1.1.1"
 jupyter = "^1.0.0"
 jupyterlab = "^3.5.1"
-pyproject-flake8 = "^6.0.0"
 flake8 = "^6.0.0"
 
 [build-system]
@@ -33,7 +32,7 @@ setup = "pre-commit install"
 yamlfix = { shell = "find . -type f \\( -iname \\*.yaml -o -iname \\*.yml \\) -exec yamlfix {} \\;" }
 isort = "isort tbj_statsapp/*.py"
 black = "black tbj_statsapp"
-flake8 = "pflake8 tbj_statsapp"
+flake8 = "flake8 tbj_statsapp --extend-ignore=E501"
 quality = ["yamlfix", "isort", "black", "flake8"]
 
 [tool.isort]
@@ -42,6 +41,3 @@ multi_line_output = 3
 
 [tool.black]
 line-length = 79
-
-[tool.flake8]
-extend-ignore = ["E501", "W503"]

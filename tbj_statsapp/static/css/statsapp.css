@@ -50,6 +50,30 @@ h3 {
   margin-bottom: 0;
 }
 
+h4 {
+  color: var(--row);
+  font-weight: var(--bold);
+  font-size: calc(var(--headings) - 4px);
+  padding-left: 0 !important;
+  margin-bottom: 0;
+}
+
+h5 {
+  color: var(--secondary);
+  font-weight: var(--bold);
+  font-size: calc(var(--headings) - 8px);
+  padding-left: 0 !important;
+  margin: auto 0;
+}
+
+#player-team {
+  color: var(--row);
+  font-weight: var(--bold);
+  font-size: calc(var(--headings) - 4px);
+  text-decoration: none;
+  padding-left: 0 !important;
+}
+
 /* Nav */
 #navbar {
     background-color: #204377;
@@ -64,7 +88,7 @@ h3 {
     font-weight: var(--normal);
     margin-left: 10px;
     margin-right: 10px;
-    padding-top: 4px;
+    padding-top: 8px;
 }
 
 .nav-link:hover {
@@ -72,7 +96,7 @@ h3 {
   font-weight: var(--normal);
   border-top-style: solid;
   border-top-width: 1px;
-  padding-top: 3px;
+  padding-top: 7px;
 }
 
 .nav-link.active {
@@ -80,12 +104,12 @@ h3 {
     font-weight: var(--bold);
     border-top-style: solid;
     border-top-width: 3px;
-    padding-top: 0;
+    padding-top: 5px;
 } */
 
 /* Body */
 #body {
-    padding-top: 12px;
+    margin-top: 8px;
 }
 
 /* Table */

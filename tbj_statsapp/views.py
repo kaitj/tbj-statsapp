@@ -2,6 +2,7 @@
 import requests
 from flask import current_app as app
 from flask import redirect, render_template
+from flask import session as flask_session
 
 from tbj_statsapp import api, info
 
@@ -17,29 +18,36 @@ def index():
 @app.route("/teams")
 def standing():
     """Render teams / standings page"""
-    # Get standing info
-    al_standings = api.get_standings(league_id=103, session=request_session)
-    nl_standings = api.get_standings(league_id=104, session=request_session)
+    flask_session["al_divisions"] = flask_session.get("al_divisions", [])
+    flask_session["nl_divisions"] = flask_session.get("nl_divisions", [])
+    table_headers = ["W", "L", "Pct", "GB", "L10", "DIFF"]
 
     # Sanity check to make sure both leagues have same number of divisions
-    al_divisions, nl_divisions = [], []
-    table_headers = ["W", "L", "Pct", "GB", "L10", "DIFF"]
-    if len(al_standings) == len(nl_standings):
-        for idx in range(len(al_standings)):
-            al_divisions.append(
-                info.get_divisions(
-                    standing=al_standings,
-                    division_idx=idx,
-                    session=request_session,
+    if not flask_session["al_divisions"] or not flask_session["nl_divisions"]:
+        # Get standing info
+        al_standings = api.get_standings(
+            league_id=103, session=request_session
+        )
+        nl_standings = api.get_standings(
+            league_id=104, session=request_session
+        )
+
+        if len(al_standings) == len(nl_standings):
+            for idx in range(len(al_standings)):
+                flask_session["al_divisions"].append(
+                    info.get_divisions(
+                        standing=al_standings,
+                        division_idx=idx,
+                        session=request_session,
+                    )
                 )
-            )
-            nl_divisions.append(
-                info.get_divisions(
-                    standing=nl_standings,
-                    division_idx=idx,
-                    session=request_session,
+                flask_session["nl_divisions"].append(
+                    info.get_divisions(
+                        standing=nl_standings,
+                        division_idx=idx,
+                        session=request_session,
+                    )
                 )
-            )
         # TODO: Raise error / alternative computation
 
     # Get league news
@@ -48,7 +56,7 @@ def standing():
     return render_template(
         "standings.html",
         table_headers=table_headers,
-        leagues=[al_divisions, nl_divisions],
+        leagues=[flask_session["al_divisions"], flask_session["nl_divisions"]],
         recent_news=recent_news,
     )
 
@@ -107,18 +115,35 @@ def leaderboards():
 def team_page(team_name, team_id):
     """Render team specific page"""
     # Get team info
-    team_info = info.get_team_info(
-        team_id=int(team_id),
-        session=request_session,
+    flask_session[f"{team_id}-info"] = flask_session.get(
+        f"{team_id}-info",
+        info.get_team_info(
+            team_id=int(team_id),
+            session=request_session,
+        ),
     )
 
     # Get team roster
-    team_roster = info.get_team_roster(
-        team_id=int(team_id),
-        season=str(team_info.get("season")),
-        session=request_session,
+    flask_session[f"{team_id}-roster"] = flask_session.get(
+        f"{team_id}-roster",
+        info.get_team_roster(
+            team_id=int(team_id),
+            season=str(flask_session[f"{team_id}-info"].get("season")),
+            session=request_session,
+        ),
     )
-    team_roster["pitcher_header"] = [
+
+    # Save player information in server-side session
+    for player_id in flask_session[f"{team_id}-roster"]["pitchers"].get(
+        "player_id"
+    ):
+        flask_session[str(player_id)] = team_id
+    for player_id in flask_session[f"{team_id}-roster"]["hitters"].get(
+        "player_id"
+    ):
+        flask_session[str(player_id)] = team_id
+
+    pitcher_header = [
         "Age",
         "T",
         "IP",
@@ -130,7 +155,7 @@ def team_page(team_name, team_id):
         "HR/9",
         "OPS",
     ]
-    team_roster["hitter_header"] = [
+    hitter_header = [
         "Age",
         "B",
         "T",
@@ -152,8 +177,10 @@ def team_page(team_name, team_id):
 
     return render_template(
         "team.html",
-        team_info=team_info,
-        team_roster=team_roster,
+        team_info=flask_session[f"{team_id}-info"],
+        team_roster=flask_session[f"{team_id}-roster"],
+        pitcher_header=pitcher_header,
+        hitter_header=hitter_header,
         recent_news=recent_news,
     )
 
@@ -161,7 +188,31 @@ def team_page(team_name, team_id):
 @app.route("/<player_first_name>-<player_last_name>-<player_id>")
 def player_page(player_first_name, player_last_name, player_id):
     """Render team specific page"""
-    return redirect("404.html")
+    team_id = flask_session.get(str(player_id), "None")
+
+    # Get player info
+    flask_session[f"{player_id}-info"] = flask_session.get(
+        f"{player_id}-info",
+        info.get_player(
+            player_id=player_id,
+            session=request_session,
+        ),
+    )
+
+    # Get team info
+    flask_session[f"{team_id}-info"] = flask_session.get(
+        f"{team_id}-info",
+        info.get_team_info(
+            team_id=team_id,
+            session=request_session,
+        ),
+    )
+
+    return render_template(
+        "player.html",
+        player_info=flask_session[f"{player_id}-info"],
+        team_info=flask_session[f"{team_id}-info"],
+    )
 
 
 @app.errorhandler(404)

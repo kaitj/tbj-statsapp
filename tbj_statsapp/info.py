@@ -96,6 +96,7 @@ def get_team_info(team_id, session):
     team_info["team_id"] = team_id
     team_info["logo"] = f"https://www.mlbstatic.com/team-logos/{team_id}.svg"
     team_info["name"] = team_api.get("name")
+    team_info["club_name"] = team_api.get("clubName").replace(" ", "").lower()
     team_info["abbreviation"] = team_api.get("abbreviation")
     team_info["division"] = api.get_division(
         division_id=team_api["division"].get("id"),
@@ -298,6 +299,31 @@ def get_team_roster(team_id, season, session):
             )
 
     return team_rosters
+
+
+def get_player(player_id, session):
+    """Get play profile information"""
+    player_api = api.get_player(player_id, session)
+
+    player = defaultdict()
+    player["id"] = player_api.get("id")
+    player["name"] = player_api.get("fullName")
+    player["photo"] = (
+        "https://content.mlb.com/images/headshots/current/60x60/"
+        + f"{player_api.get('id')}@2x.png"
+    )
+    player["position"] = player_api["primaryPosition"].get("abbreviation")
+    #     team
+    player["bat_side"] = player_api["batSide"].get("code")
+    player["pitch_hand"] = player_api["pitchHand"].get("code")
+    player["age"] = player_api.get("currentAge")
+    player["height"] = (
+        player_api.get("height").replace("\\'", "'").replace(" ", "")
+    )
+    player["weight"] = player_api.get("weight")
+    player["draft_year"] = player_api.get("draftYear", "Undrafted")
+
+    return player
 
 
 def get_leaders(category, player_type, session):

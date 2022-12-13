@@ -89,14 +89,16 @@ def leaderboards():
         "onBasePlusSlugging": "OPS",
         "stolenBases": "SB",
     }
-    hitter_leaders = [
-        info.get_leaders(
-            category=category,
-            session=request_session,
-            player_type="hitting",
-        )
-        for category in hitter_categories.keys()
-    ]
+
+    if not flask_session.get("hitter_leaders"):
+        flask_session["hitter_leaders"] = [
+            info.get_leaders(
+                category=category,
+                session=request_session,
+                player_type="hitting",
+            )
+            for category in hitter_categories.keys()
+        ]
 
     # Get pitching leaders
     pitcher_categories = {
@@ -104,14 +106,15 @@ def leaderboards():
         "strikeouts": "SO",
         "saves": "Saves",
     }
-    pitcher_leaders = [
-        info.get_leaders(
-            category=category,
-            player_type="pitching",
-            session=request_session,
-        )
-        for category in pitcher_categories.keys()
-    ]
+    if not flask_session.get("pitcher_leaders"):
+        flask_session["pitcher_leaders"] = [
+            info.get_leaders(
+                category=category,
+                player_type="pitching",
+                session=request_session,
+            )
+            for category in pitcher_categories.keys()
+        ]
 
     # Get league news
     recent_news = info.get_recent_news(
@@ -122,14 +125,18 @@ def leaderboards():
         "leaderboards.html",
         recent_news=recent_news,
         categories=[hitter_categories.values(), pitcher_categories.values()],
-        leaders=[hitter_leaders, pitcher_leaders],
+        leaders=[
+            flask_session.get("hitter_leaders"),
+            flask_session.get("pitcher_leaders"),
+        ],
     )
 
 
-@app.route("/<team_name>")
+@app.route("/teams/<team_name>")
 def team_page(team_name):
     """Render team specific page"""
     team_id = flask_session.get(team_name)
+
     # Get team info
     flask_session[f"{team_id}-info"] = flask_session.get(
         f"{team_id}-info",
@@ -213,7 +220,13 @@ def player_page(player_first_name, player_last_name, player_id):
         ),
     )
 
-    team_id = flask_session.get(str(player_id), "None")
+    # Get team id, or search for player if not already cached
+    team_id = flask_session.get(str(player_id))
+    if not team_id:
+        _, team_id = api.search_players(
+            player_id=int(player_id),
+            session=request_session,
+        )
 
     # Get team info
     flask_session[f"{team_id}-info"] = flask_session.get(

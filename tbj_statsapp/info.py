@@ -80,7 +80,7 @@ def get_divisions(standing, division_idx, session):
 
 def get_team_info(team_id, session):
     """Get team related info"""
-    team_api = api.get_team(team_id, session=session)
+    team_api = api.get_team(team_id=team_id, session=session)
     league_standings = api.get_standings(
         team_api["league"]["id"], session=session
     )

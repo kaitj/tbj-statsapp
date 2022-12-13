@@ -59,6 +59,25 @@ def get_player_stats(
     return stats
 
 
+def search_players(player_id, session, stats_api=STATSAPI_URL):
+    """Function to search player list
+
+    NOTE: This is only used if player has not already been cached
+    """
+
+    players = (
+        session.get(f"{stats_api}/api/v1/sports/1/players")
+        .json()
+        .get("people")
+    )
+
+    for player in players:
+        if player_id == player.get("id"):
+            return player.get("id"), player.get("currentTeam").get("id")
+
+    raise ValueError("Could not find player")
+
+
 def get_standings(league_id, session, stats_api=STATSAPI_URL):
     """Grab and return league specific standings by division from statsapi"""
     standings = session.get(

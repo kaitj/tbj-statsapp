@@ -322,7 +322,7 @@ def get_player(player_id, session):
         player_api.get("height").replace("\\'", "'").replace(" ", "")
     )
     player["weight"] = player_api.get("weight")
-    player["draft_year"] = player_api.get("draftYear", "Undrafted")
+    player["draft_year"] = player_api.get("draftYear", "N/A")
 
     return player
 

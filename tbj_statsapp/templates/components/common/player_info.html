@@ -1,6 +1,6 @@
 <div class="row">
   <!-- Player photo -->
-  <div class="col-1" style="padding: 0">
+  <div class="col-1">
     <img
       src="{{ player_info.photo }}"
       alt="Player photo"
@@ -9,16 +9,22 @@
   </div>
 
   <!-- Player name, position, team -->
-  <div class="col-6" style="margin: auto 0; padding-left: 40px">
+  <div class="col-6" style="margin: auto 0; padding-left: 50px">
     <div class="row"><h2>{{ player_info.name }}</h2></div>
     <div class="row">
       <div class="col-1" style="display: table; padding-left: 0">
-        <h4 style="display: table-cell; vertical-align: middle; color: var(--secondary)">{{ player_info.position }}</h4>
+        <h4
+          style="
+            display: table-cell;
+            vertical-align: middle;
+            color: var(--secondary);
+          "
+        >
+          {{ player_info.position }}
+        </h4>
       </div>
-      <div class="col-5" style="margin-left: -24px; padding: 0">
-        <a
-          href="/teams/{{ team_info.club_name }}"
-          id="player-team"
+      <div class="col-5" style="margin-left: -12px; padding: 0">
+        <a href="/teams/{{ team_info.club_name }}" id="player-team"
           >{{ team_info.name }}</a
         >
       </div>
@@ -29,7 +35,7 @@
   <div class="col-5" style="margin: auto 0">
     <div
       class="row"
-      style="justify-content: right; margin: 0; padding-right: 30px"
+      style="justify-content: right; margin: 0; padding-right: 0"
     >
       <div class="col-1" style="margin: 0 8px">
         <h5>B/T</h5>
@@ -45,7 +51,7 @@
     </div>
     <div
       class="row"
-      style="justify-content: right; margin: 0; padding-right: 30px"
+      style="justify-content: right; margin: 0; padding-right: 0"
     >
       <div class="col-1" style="margin: 0 8px">
         <h4>{{ player_info.bat_side }}/{{ player_info.pitch_hand }}</h4>

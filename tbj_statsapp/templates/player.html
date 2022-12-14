@@ -2,7 +2,9 @@
 {% block title %}{{ player_info.name }}{% endblock %}
 
 {% block content %}
-    {{ player_info }}
     <!-- Player header -->
     {% include "components/common/player_info.html" %}
+
+    <!-- Player stats -->
+    {% include "components/common/player_career_stats.html" %}
 {% endblock %}

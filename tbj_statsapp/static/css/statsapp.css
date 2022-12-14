@@ -191,7 +191,11 @@ tbody tr td {
 }
 
 .playerStyle {
-  width: 48px;
   text-align: center;
   font-weight: var(--bold) !important;
+}
+
+.stats-toggle {
+  cursor: pointer;
+  user-select: none;
 }

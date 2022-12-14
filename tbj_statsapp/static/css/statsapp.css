@@ -82,7 +82,7 @@ a.nav-link.active {
 }
 
 /* Table */
-.division {
+.division, .category {
   padding: 8px 0;
 }
 

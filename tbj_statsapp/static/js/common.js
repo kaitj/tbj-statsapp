@@ -8,17 +8,16 @@ $(function () {
   });
 });
 
-// Hide pitcher div on load
+// Show default views on page load
 $(function () {
+  $(".toHide").hide()
   $("#Hitters").show();
-  $("#Pitchers").hide();
 });
 
-// Toggle hitter / pitcher divs
+// Toggle divs
 $(function () {
-  $("input[name=playerType]").click(function () {
-    $("#Hitters").hide();
-    $("#Pitchers").hide();
+  $("input[type=radio]").click(function () {
+    $(".toHide").hide();
     $("#" + $(this).val()).show();
   });
 });

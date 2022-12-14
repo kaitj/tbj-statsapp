@@ -1,0 +1,78 @@
+<div>
+  <div class="row">
+    <!-- Split by player type (hitters, pitchers) -->
+    {% for leader_type in leaders %} {% set playerType = loop.index0 %} {% set
+    category_headers = categories[playerType] | list %}
+    <div class="col-6">
+      <h3 style="margin-left: -12px">
+        {% if playerType == 0 %} Hitters {% else %} Pitchers {% endif %}
+      </h3>
+      <!-- Split by category -->
+      {% for leader_category in leader_type %}
+      <div class="row category" style="padding-right: 7px">
+        <table>
+          <!-- Table header -->
+          <thead>
+            <tr>
+              <th class="col-1" style="text-align: center">Rank</th>
+              <th class="col-1" style="text-align: center">Pos</th>
+              {% if playerType == 0 %}
+              <th class="col-9">Player</th>
+              {% else %}
+              <th class="col-9">Pitcher</th>
+              {% endif %}
+              <th class="col-1" style="text-align: center">
+                {{ category_headers[loop.index0] }}
+              </th>
+            </tr>
+          </thead>
+          <!-- Table info -->
+          <tbody>
+            {% for rank in leader_category.rank %}
+            <tr>
+              <td
+                class="col-1"
+                style="text-align: center; font-weight: var(--bold)"
+              >
+                {{ rank }}
+              </td>
+              <td class="col-1" style="text-align: center">
+                {{ leader_category.position[loop.index0] }}
+              </td>
+              <td class="col-7">
+                <div class="row">
+                  <div class="col-3">
+                    <img
+                      src="{{ leader_category.player_photo[loop.index0] }}"
+                      onerror="this.onerror=null;this.src='https://content.mlb.com/images/headshots/current/60x60/generic.png';"
+                      alt="Player photo"
+                      style="max-height: 40px"
+                    />
+                  </div>
+                  <div class="col-9" style="margin: auto 0 auto -52px">
+                    <a
+                      href="/{{ leader_category.first_name[loop.index0] }}-{{ leader_category.last_name[loop.index0] }}-{{ leader_category.player_id[loop.index0] }}"
+                      style="color: var(--primary); font-weight: var(--bold)"
+                    >
+                      {{ leader_category.last_name[loop.index0] }}, {{
+                      leader_category.first_name[loop.index0] }}
+                    </a>
+                  </div>
+                </div>
+              </td>
+              <td
+                class="col-1"
+                style="text-align: center; font-weight: var(--bold);"
+              >
+                {{ leader_category.value[loop.index0] }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+</div>

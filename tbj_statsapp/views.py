@@ -71,7 +71,10 @@ def standing():
     return render_template(
         "standings.html",
         table_headers=table_headers,
-        leagues=[flask_session["al_divisions"], flask_session["nl_divisions"]],
+        leagues=[
+            flask_session.get("al_divisions"),
+            flask_session.get("nl_divisions"),
+        ],
         recent_news=recent_news,
     )
 
@@ -90,15 +93,17 @@ def leaderboards():
         "stolenBases": "SB",
     }
 
-    if not flask_session.get("hitter_leaders"):
-        flask_session["hitter_leaders"] = [
+    flask_session["hitter_leaders"] = flask_session.get(
+        "hitter_leaders",
+        [
             info.get_leaders(
                 category=category,
                 session=request_session,
                 player_type="hitting",
             )
             for category in hitter_categories.keys()
-        ]
+        ],
+    )
 
     # Get pitching leaders
     pitcher_categories = {
@@ -106,15 +111,17 @@ def leaderboards():
         "strikeouts": "SO",
         "saves": "Saves",
     }
-    if not flask_session.get("pitcher_leaders"):
-        flask_session["pitcher_leaders"] = [
+    flask_session["pitcher_leaders"] = flask_session.get(
+        "pitcher_leaders",
+        [
             info.get_leaders(
                 category=category,
                 player_type="pitching",
                 session=request_session,
             )
             for category in pitcher_categories.keys()
-        ]
+        ],
+    )
 
     # Get league news
     recent_news = info.get_recent_news(
@@ -200,8 +207,8 @@ def team_page(team_name):
 
     return render_template(
         "team.html",
-        team_info=flask_session[f"{team_id}-info"],
-        team_roster=flask_session[f"{team_id}-roster"],
+        team_info=flask_session.get(f"{team_id}-info"),
+        team_roster=flask_session.get(f"{team_id}-roster"),
         pitcher_header=pitcher_header,
         hitter_header=hitter_header,
         recent_news=recent_news,
@@ -219,14 +226,16 @@ def player_page(player_first_name, player_last_name, player_id):
             session=request_session,
         ),
     )
+    position = flask_session.get(f"{player_id}-info").get("position")
 
     # Get team id, or search for player if not already cached
-    team_id = flask_session.get(str(player_id))
-    if not team_id:
-        _, team_id = api.search_players(
+    team_id = flask_session.get(
+        str(player_id),
+        api.search_players(
             player_id=int(player_id),
             session=request_session,
-        )
+        ),
+    )
 
     # Get team info
     flask_session[f"{team_id}-info"] = flask_session.get(
@@ -237,10 +246,56 @@ def player_page(player_first_name, player_last_name, player_id):
         ),
     )
 
+    # Get career stats
+    flask_session[f"{player_id}-career"] = flask_session.get(
+        f"{player_id}-stats",
+        info.get_career_stats(
+            player_id=player_id,
+            category="pitching" if position == "P" else "hitting",
+            session=request_session,
+        ),
+    )
+    pitcher_headers = [
+        "G",
+        "IP",
+        "W",
+        "L",
+        "SV",
+        "ERA",
+        "WHIP",
+        "H",
+        "R",
+        "SO",
+        "BB",
+        "HR/9",
+        "OPS",
+    ]
+    hitter_headers = [
+        "G",
+        "PA",
+        "AB",
+        "R",
+        "H",
+        "2B",
+        "3B",
+        "HR",
+        "RBI",
+        "SB",
+        "BB",
+        "SO",
+        "OBP",
+        "SLG",
+        "OPS",
+    ]
+
     return render_template(
         "player.html",
-        player_info=flask_session[f"{player_id}-info"],
-        team_info=flask_session[f"{team_id}-info"],
+        player_info=flask_session.get(f"{player_id}-info"),
+        player_career=flask_session.get(f"{player_id}-career").to_dict(
+            orient="list"
+        ),
+        team_info=flask_session.get(f"{team_id}-info"),
+        table_header=pitcher_headers if position == "P" else hitter_headers,
     )
 
 

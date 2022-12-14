@@ -1,6 +1,8 @@
 from collections import defaultdict
 from datetime import datetime
 
+import pandas as pd
+
 from tbj_statsapp import api, utils
 
 
@@ -323,6 +325,96 @@ def get_player(player_id, session):
     player["draft_year"] = player_api.get("draftYear", "Undrafted")
 
     return player
+
+
+def get_career_stats(player_id, category, session):
+    """Function to grab career stats"""
+    player_career = api.get_player_stats(
+        player_id=player_id,
+        category=category,
+        session=session,
+    )
+
+    career = defaultdict(list)
+    for season in player_career:
+        # Index for sorting teams if in same year
+        career["season"].extend([season.get("season")])
+        if season_team := season.get("team"):
+            # Team index for multiple teams in a single season
+            if (
+                len(career["season"]) > 1
+                and career["season"][-2] == career["season"][-1]
+            ):
+                career["team_idx"].append(career["team_idx"][-1] + 1)
+            else:
+                career["team_idx"].append(1)
+
+            career["team"].extend([team_id := season_team.get("id")])
+            career["team_logo"].extend(
+                ["https://www.mlbstatic.com/team-logos/" + f"{team_id}.svg"]
+            )
+            career["num_teams"].append(1)
+        else:
+            career["team_idx"].append(0)
+            career["team"].append(0)
+            career["team_logo"].extend(["null"])
+            career["num_teams"].extend([season.get("numTeams")])
+        # Grab team abbreviation
+        team_info = api.get_team(team_id=team_id, session=session)
+        career["team_name"].extend([team_info.get("abbreviation")])
+
+        # Stats
+        career["games"].extend([season.get("stat").get("gamesPlayed")])
+        # Pitcher specific
+        if category == "pitching":
+            career["ip"].extend([season.get("stat").get("inningsPitched")])
+            career["wins"].extend([season.get("stat").get("wins")])
+            career["losses"].extend([season.get("stat").get("losses")])
+            career["saves"].extend([season.get("stat").get("saves")])
+            career["era"].extend([season.get("stat").get("era")])
+            career["whip"].extend([season.get("stat").get("whip")])
+            career["hits"].extend([season.get("stat").get("hits")])
+            career["runs"].extend([season.get("stat").get("runs")])
+            career["strikeouts"].extend([season.get("stat").get("strikeOuts")])
+            career["bb"].extend([season.get("stat").get("baseOnBalls")])
+            career["hr_per_9"].extend([season.get("stat").get("homeRunsPer9")])
+            career["ops"].extend([season.get("stat").get("ops")])
+        elif category == "hitting":
+            career["plate_appearances"].extend(
+                [season.get("stat").get("plateAppearances")]
+            )
+            career["at_bats"].extend([season.get("stat").get("atBats")])
+            career["runs"].extend([season.get("stat").get("runs")])
+            career["hits"].extend([season.get("stat").get("hits")])
+            career["doubles"].extend([season.get("stat").get("doubles")])
+            career["triples"].extend([season.get("stat").get("triples")])
+            career["hrs"].extend([season.get("stat").get("homeRuns")])
+            career["rbi"].extend([season.get("stat").get("rbi")])
+            career["stolen_bases"].extend(
+                [season.get("stat").get("stolenBases")]
+            )
+            career["bb"].extend([season.get("stat").get("baseOnBalls")])
+            career["strikeouts"].extend([season.get("stat").get("strikeOuts")])
+            career["obp"].extend([season.get("stat").get("obp")])
+            career["slg"].extend([season.get("stat").get("slg")])
+            career["ops"].extend([season.get("stat").get("ops")])
+        else:
+            raise ValueError("Invalid category selected")
+
+    # Convert data to dataframe for easier manipulation
+    career_df = pd.DataFrame(career)
+    career_df.sort_values(["season", "team_idx"], inplace=True)
+
+    # Update num_teams column if multiple teams in single season
+    seasons = career_df["season"].unique()
+    for season in seasons:
+        max_teams = career_df[career_df["season"] == season]["num_teams"].max()
+        if max_teams > 1:
+            career_df.loc[
+                career_df["season"] == season, "num_teams"
+            ] = max_teams
+
+    return career_df
 
 
 def get_leaders(category, player_type, session):

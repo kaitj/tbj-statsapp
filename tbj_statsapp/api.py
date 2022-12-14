@@ -73,7 +73,7 @@ def search_players(player_id, session, stats_api=STATSAPI_URL):
 
     for player in players:
         if player_id == player.get("id"):
-            return player.get("id"), player.get("currentTeam").get("id")
+            return player.get("currentTeam").get("id")
 
     raise ValueError("Could not find player")
 

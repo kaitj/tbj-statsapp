@@ -7,6 +7,10 @@ from flask import session as flask_session
 from tbj_statsapp import api, info
 
 request_session = requests.session()
+# Add retries (max 5 attempts) in case session is closed on remote end
+adapter = requests.adapters.HTTPAdapter(max_retries=5)
+request_session.mount("https://", adapter)
+request_session.mount("http://", adapter)
 
 
 @app.route("/")

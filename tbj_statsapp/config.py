@@ -1,4 +1,6 @@
 """Configuration classes for Flask"""
+import os
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -18,15 +20,18 @@ class ProductionConfig(Config):
 
     DEBUG = False
     TESTING = False
+    SECRET_KEY = os.environ.get("SECRET_KEY", "dev")
 
 
 class DevelopmentConfig(Config):
     """Config used in development of app"""
 
     DEBUG = True
+    SECRET_KEY = "dev"
 
 
 class TestingConfig(Config):
     """Config used for unit testing"""
 
     TESTING = True
+    SECRET_KEY = "test"

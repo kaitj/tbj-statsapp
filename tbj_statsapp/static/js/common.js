@@ -14,10 +14,18 @@ $(function () {
   $("#Hitters").show();
 });
 
-// Toggle divs
+// Toggle hitter/pitcher divs
 $(function () {
   $("input[type=radio]").click(function () {
     $(".toHide").hide();
     $("#" + $(this).val()).show();
+  });
+});
+
+// Toggle stats rows
+$(function () {
+  $(".stats-toggle").click(function () {
+    var season = this.id;
+    $("." + season).toggle();
   });
 });

@@ -1,0 +1,44 @@
+<tr>
+  <!-- Season info -->
+  <td
+    class="playerStyle"
+    style="width: 70px; font-weight: var(--normal) !important"
+  >
+    <div class="row">
+      <div style="width: 5px; padding-left: 16px"></div>
+      <div style="width: 55px; padding-left: 0px">{{ season }}</div>
+    </div>
+  </td>
+  <!-- Team Info -->
+  <td>
+    <div class="row" style="align-items: center">
+      <div style="max-width: 40px">
+        <img
+          src="{{ player_career.team_logo[loop.index0] }}"
+          alt="Team logo"
+          style="height: 30px"
+        />
+      </div>
+      <div
+        style="
+          max-width: 400px;
+          color: var(--primary);
+          font-weight: var(--bold);
+        "
+      >
+        {{ player_career.team_name[loop.index0] }}
+      </div>
+    </div>
+  </td>
+  <!-- Stats -->
+  <td class="playerStyle" style="width: 40px; padding-right: 16px">
+    {{ player_career.games[loop.index0] }}
+  </td>
+  {% if player_info.position == "P" %}
+    <!-- Pitchers -->
+    {% include "components/common/player_pitcher_stats.html" %}
+  {% else %}
+    <!-- Hitters -->
+    {% include "components/common/player_hitter_stats.html" %}
+  {% endif %}
+</tr>

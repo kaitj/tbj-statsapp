@@ -1,0 +1,26 @@
+<div class="row">
+  <table>
+    <!-- Table header -->
+    <thead>
+      <tr>
+        <th class="playerStyle" style="width: 70px">Year</th>
+        <th style="width: 530px">Team</th>
+        {% for header in table_header %}
+        <th class="playerStyle" style="width: 40px; padding-right: 16px">
+          {{ header }}
+        </th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <!-- Table info -->
+    <tbody>
+      {% for season in player_career.season %}
+        {% if player_career.num_teams[loop.index0] > 1 %}
+          {% include "components/common/player_multi_team_season.html" %}
+        {% else %}
+          {% include "components/common/player_single_team_season.html" %}
+        {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

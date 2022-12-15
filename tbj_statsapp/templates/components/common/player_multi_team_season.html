@@ -1,0 +1,76 @@
+{% if player_career.team_logo[loop.index0] == "null" %}
+<tr>
+  <td
+    class="playerStyle"
+    style="width: 70px; font-weight: var(--normal) !important"
+  >
+    <div class="row">
+      <!-- FOR MULTI TEAM SEASON (NEED TO TURN INTO INPUT)-->
+      <div
+        class="stats-toggle"
+        id="{{ season }}"
+        style="width: 5px; padding-left: 16px"
+      >
+        &#8964;
+      </div>
+      <div style="width: 55px; padding-left: 0px">{{ season }}</div>
+    </div>
+  </td>
+  <td>
+    <div class="row" style="align-items: center">
+      <div style="max-width: 40px"></div>
+      <div
+        style="
+          max-width: 400px;
+          color: var(--primary);
+          font-weight: var(--bold);
+        "
+      >
+        {{ player_career.num_teams[loop.index0] }} teams
+      </div>
+    </div>
+  </td>
+  {% else %}
+</tr>
+
+<tr class="toHide {{ season }}" style="display: hidden">
+  <td
+    class="playerStyle"
+    style="width: 70px; font-weight: var(--normal) !important"
+  >
+    <div class="row">
+      <!-- FOR MULTI TEAM SEASON (NEED TO TURN INTO INPUT)-->
+      <div class="" style="width: 5px; padding-left: 16px"></div>
+      <div style="width: 55px; padding-left: 0px">{{ season }}</div>
+    </div>
+  </td>
+  <td>
+    <div class="row" style="align-items: center">
+      <div style="max-width: 40px">
+        <img
+          src="{{ player_career.team_logo[loop.index0] }}"
+          alt="Team logo"
+          style="height: 30px"
+        />
+      </div>
+      <div
+        style="
+          max-width: 400px;
+          color: var(--primary);
+          font-weight: var(--bold);
+        "
+      >
+        {{ player_career.team_name[loop.index0] }}
+      </div>
+    </div>
+  </td>
+  {% endif %}
+  <td class="playerStyle" style="width: 40px; padding-right: 16px">
+    {{ player_career.games[loop.index0] }}
+  </td>
+  {% if player_info.position == "P" %}
+  <!-- Pitchers -->
+  {% include "components/common/player_pitcher_stats.html" %} {% else %}
+  <!-- Hitters -->
+  {% include "components/common/player_hitter_stats.html" %} {% endif %}
+</tr>

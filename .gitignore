@@ -1,3 +1,9 @@
+# Package
 __pycache__/
+
+# Dev
 .ipynb_checkpoints/
 *.ipynb
+
+# Cookies
+flask_session/

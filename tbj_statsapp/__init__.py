@@ -1,9 +1,11 @@
 """Instantiate Flask and set up plugins"""
 
 import os
+from datetime import timedelta
 
 from flask import Flask
 
+from flask_session import Session
 from tbj_statsapp.config import (
     DevelopmentConfig,
     ProductionConfig,
@@ -24,6 +26,7 @@ class ConfigException(Exception):
 
 
 # Grab environment
+FLASK_ENV = os.environ.get("FLASK_ENV", False)
 DEBUG = os.environ.get("FLASK_DEBUG", False)
 TESTING = os.environ.get("FLASK_TESTING", False)
 
@@ -42,9 +45,18 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(config_settings)
 
+    # Cookie settings - same across all settings
+    app.config["SESSION_TYPE"] = "filesystem"
+    app.config["SESSION_PERMANENT"] = True
+    app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=6)
+
+    Session(app)
+
     # Route views without Flask blueprints
     with app.app_context():
         from tbj_statsapp import views  # noqa: F401
+
+    # Setup session
 
     return app
 

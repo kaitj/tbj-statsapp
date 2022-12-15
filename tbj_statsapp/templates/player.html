@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}{{ player_info.name }}{% endblock %}
+
+{% block content %}
+    <!-- Player header -->
+    {% include "components/common/player_info.html" %}
+
+    <!-- Player stats -->
+    {% include "components/common/player_career_stats.html" %}
+{% endblock %}

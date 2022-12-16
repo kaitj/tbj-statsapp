@@ -36,6 +36,7 @@ isort = "isort tbj_statsapp/*.py"
 black = "black tbj_statsapp"
 flake8 = "flake8 tbj_statsapp --extend-ignore=E501"
 quality = ["yamlfix", "isort", "black", "flake8"]
+test = "python -m unittest"
 
 [tool.isort]
 profile = "black"

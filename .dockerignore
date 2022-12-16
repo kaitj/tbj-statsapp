@@ -1,4 +1,5 @@
 .git
+.github
 tests
 __pycache__
 .ipynb_checkpoints

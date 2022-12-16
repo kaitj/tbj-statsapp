@@ -103,7 +103,7 @@
       <tr>
         <th class="playerStyle">Pos</th>
         <th class="playerStyle">#</th>
-        <th style="width: 528px">Pitcher</th>
+        <th style="width: 432px">Pitcher</th>
         {% for tbl_header in pitcher_header %}
         <th class="playerStyle">{{ tbl_header }}</th>
         {% endfor %}
@@ -122,7 +122,7 @@
         >
           {{ team_roster.pitchers.jersey_number[loop.index0] }}
         </td>
-        <td style="width: 528px">
+        <td style="width: 432px">
           <div class="row">
             <div class="col-3">
               <!-- Replace photo with placeholder if image not found -->
@@ -133,7 +133,7 @@
                 style="max-height: 40px"
               />
             </div>
-            <div class="col-9" style="margin: auto 0 auto -90px">
+            <div class="col-9" style="margin: auto 0 auto -52px">
               <a
                 href="/{{ team_roster.pitchers.first_name[loop.index0] }}-{{ team_roster.pitchers.last_name[loop.index0] }}-{{ player_id }}"
                 style="color: var(--primary); font-weight: var(--bold)"

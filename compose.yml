@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  tbj_statsapp:
+    image: kaitj/tbj-statsapp
+    environment:
+      FLASK_DEBUG: False
+      FLASK_TESTING: False
+    ports:
+      - "5000:5000"
+    network_mode: host

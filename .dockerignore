@@ -1,0 +1,7 @@
+.git
+.github
+tests
+__pycache__
+.ipynb_checkpoints
+flask_session
+dev.ipynb

@@ -1,0 +1,114 @@
+name: Statsapp CI Workflow
+
+on:
+  push:
+    branches:
+      - '*'
+      - '!push-action/*'
+  pull_request:
+    branches:
+      - '*',
+      - '!push-action/*'
+
+jobs:
+  test:
+    name: Test code
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10']
+
+    steps:
+      - name: Clone repository
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache setup
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}
+          restore-keys: ${{ runner.os }}-pip-${{ matrix.python-version }}
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.2.2
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: ${{ runner.os }}-${{ hashFile('**/poetry.lock') }}-${{ matrix.python-version }}
+
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != true
+        run: poetry install --no-interaction --no-root
+
+      - name: Install library
+        run: poetry install -no-interaction
+
+      - name: Test Statsapp
+        shell: bash
+        env:
+          FLASK_DEBUG: false
+          FLASK_TESTING: true
+        run: poetry run poe test
+
+  quality:
+    name: Lint code
+    needs: [test]
+    if: github.event.pull_request.merged == false
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9']
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.2.2
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: ${{ runner.os }}-${{ hashFile('**/poetry.lock') }}-${{ matrix.python-version }}
+
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != true
+        run: poetry install --no-interaction --no-root --with dev
+
+      - name: Run yamlfix
+        run: poetry run poe yamlfix
+
+      - name: Run isort
+        run: poetry run poe isort
+
+      - name: Run black
+        run: poetry run poe black
+
+      - name: Run flake8
+        run: poetry run poe flake8

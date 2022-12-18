@@ -4,6 +4,7 @@ __pycache__/
 # Dev
 .ipynb_checkpoints/
 *.ipynb
+*.zip
 
 # Cookies
 flask_session/

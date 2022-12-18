@@ -7,7 +7,7 @@
         <th class="playerStyle" style="width: 50px">#</th>
         <th style="width: 800px">Pitcher</th>
         {% for tbl_header in pitcher_header %}
-        <th class="playerStyle" style="wdith: 52px">{{ tbl_header }}</th>
+        <th class="playerStyle" style="width: 52px">{{ tbl_header }}</th>
         {% endfor %}
       </tr>
     </thead>
@@ -17,8 +17,11 @@
       <tr>
         <td
           class="playerStyle"
-          style="font-weight: var(--normal) !important"
-          style="width: 50px; padding-left: 12px"
+          style="
+            font-weight: var(--normal) !important;
+            width: 50px;
+            padding-left: 12px;
+          "
         >
           {{ team_roster.pitchers.position[loop.index0] }}
         </td>

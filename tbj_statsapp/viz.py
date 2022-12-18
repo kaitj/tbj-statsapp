@@ -27,7 +27,7 @@ def gen_simple_hitter(career_df, primary_colour=PRIMARY_COLOUR):
                 f"Season: {viz_df.loc[idx, 'season']}<br>"
                 f"Team: {viz_df.loc[idx, 'team_name']}<br>"
                 f"Games Played: {viz_df.loc[idx, 'games']}<br>"
-                f"Avg: {str(viz_df.loc[idx, 'avg']).lstrip('0')}<br>"
+                f"Avg: {viz_df.loc[idx, 'avg']:.3f}<br>"
                 f"RBI: {viz_df.loc[idx, 'rbi']}<br>"
                 f"SB: {viz_df.loc[idx, 'stolen_bases']}<br>"
                 f"BB: {viz_df.loc[idx, 'bb']}<br>"

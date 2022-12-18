@@ -11,10 +11,12 @@ _Note: The application is currently in a development phase and is not suitable
 for production deployment. As such, there may be bugs in the application or
 browser-specific errors._
 
-### Starting the application
-Please first clone / download the repository to your machine.
+### Starting the application (Linux / Mac)
+Please first clone / download the repository to your machine. To do so,
+the following command can be typed into the terminal (replacing `<dir>`
+with the directory of your choice).
 
-```git clone https://github.com/kaitj/tbj-statsapp.git```
+```git clone https://github.com/kaitj/tbj-statsapp.git <dir>```
 
 Once cloned, there are **2** possible ways to start the application.
 
@@ -27,7 +29,11 @@ instructions):
 1. [Docker](https://docs.docker.com/get-docker/)
 2. [Docker Compose](https://docs.docker.com/compose/install/)
 
-Once installed, navigate to the location of where the repository was cloned.
+Once installed, navigate to the location of where the repository was cloned
+(replacing `<dir>` with the same directory as used during the cloning command).
+
+```cd <dir>```
+
 Once there, run the following command from a terminal:
 
 ```docker compose up -d```
@@ -66,4 +72,4 @@ From here, open up your web browser (e.g. Chrome, Safari, Firefox, etc.) and
 type the following URL in the address bar: https://0.0.0.0:5000
 
 Once you have finished, you can shutdown the web application by hitting `CTRL+C`
-in the terminal window.
+in the same terminal window that was used to run the application.

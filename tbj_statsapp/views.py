@@ -250,15 +250,31 @@ def player_page(player_first_name, player_last_name, player_id):
         ),
     )
 
-    # Get career stats
-    flask_session[f"{player_id}-career"] = flask_session.get(
-        f"{player_id}-stats",
-        info.get_career_stats(
-            player_id=player_id,
-            category="pitching" if position == "P" else "hitting",
-            session=request_session,
-        ),
-    )
+    player_viz = None
+    try:
+        # Get career stats
+        flask_session[f"{player_id}-career"] = flask_session.get(
+            f"{player_id}-stats",
+            info.get_career_stats(
+                player_id=player_id,
+                category="pitching" if position == "P" else "hitting",
+                session=request_session,
+            ),
+        )
+
+        # Generate visualization
+        player_viz = (
+            viz.gen_simple_pitcher(flask_session[f"{player_id}-career"])
+            if position == "P"
+            else viz.gen_simple_hitter(flask_session[f"{player_id}-career"])
+        )
+
+        flask_session[f"{player_id}-career"] = flask_session.get(
+            f"{player_id}-career"
+        ).to_dict(orient="list")
+    except AttributeError:
+        flask_session[f"{player_id}-career"] = None
+
     pitcher_headers = [
         "G",
         "IP",
@@ -294,18 +310,11 @@ def player_page(player_first_name, player_last_name, player_id):
 
     # Generate visualization
     # Add check for data
-    player_viz = (
-        viz.gen_simple_hitter(flask_session[f"{player_id}-career"])
-        if not position == "P"
-        else None
-    )
 
     return render_template(
         "player.html",
         player_info=flask_session.get(f"{player_id}-info"),
-        player_career=flask_session.get(f"{player_id}-career").to_dict(
-            orient="list"
-        ),
+        player_career=flask_session.get(f"{player_id}-career"),
         player_viz=player_viz,
         team_info=flask_session.get(f"{team_id}-info"),
         table_header=pitcher_headers if position == "P" else hitter_headers,

@@ -4,7 +4,7 @@ from flask import current_app as app
 from flask import redirect, render_template
 from flask import session as flask_session
 
-from tbj_statsapp import api, info
+from tbj_statsapp import api, info, viz
 
 request_session = requests.session()
 # Add retries (max 5 attempts) in case session is closed on remote end
@@ -292,12 +292,21 @@ def player_page(player_first_name, player_last_name, player_id):
         "OPS",
     ]
 
+    # Generate visualization
+    # Add check for data
+    player_viz = (
+        viz.gen_simple_hitter(flask_session[f"{player_id}-career"])
+        if not position == "P"
+        else None
+    )
+
     return render_template(
         "player.html",
         player_info=flask_session.get(f"{player_id}-info"),
         player_career=flask_session.get(f"{player_id}-career").to_dict(
             orient="list"
         ),
+        player_viz=player_viz,
         team_info=flask_session.get(f"{team_id}-info"),
         table_header=pitcher_headers if position == "P" else hitter_headers,
     )

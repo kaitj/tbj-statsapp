@@ -354,14 +354,16 @@ def get_career_stats(player_id, category, session):
                 ["https://www.mlbstatic.com/team-logos/" + f"{team_id}.svg"]
             )
             career["num_teams"].append(1)
+            # Get team abbreviation
+            team_info = api.get_team(team_id=team_id, session=session)
+            career["team_name"].extend([team_info.get("abbreviation")])
+
         else:
             career["team_idx"].append(0)
             career["team"].append(0)
             career["team_logo"].extend(["null"])
             career["num_teams"].extend([season.get("numTeams")])
-        # Grab team abbreviation
-        team_info = api.get_team(team_id=team_id, session=session)
-        career["team_name"].extend([team_info.get("abbreviation")])
+            career["team_name"].extend([f"{season.get('numTeams')} teams"])
 
         # Stats
         career["games"].extend([season.get("stat").get("gamesPlayed")])
@@ -384,6 +386,7 @@ def get_career_stats(player_id, category, session):
                 [season.get("stat").get("plateAppearances")]
             )
             career["at_bats"].extend([season.get("stat").get("atBats")])
+            career["avg"].extend([season.get("stat").get("avg")])
             career["runs"].extend([season.get("stat").get("runs")])
             career["hits"].extend([season.get("stat").get("hits")])
             career["doubles"].extend([season.get("stat").get("doubles")])

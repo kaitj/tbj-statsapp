@@ -61,7 +61,7 @@ to manage dependencies. See the installation instructions
 [here](https://python-poetry.org/docs/). Once Poetry has been installed,
 navigate to the cloned / downloaded repository and run the following command:
 
-```poetry install```
+```poetry install --without dev```
 
 After the dependencies have been installed, the web application can be started
 with the following command:
